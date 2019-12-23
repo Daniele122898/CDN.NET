@@ -1,0 +1,46 @@
+﻿{
+  "AppSettings": {
+    "Token": "",
+    "BaseUrl": "http://localhost:5000",
+    "Private": false
+  },
+  "UploadSettings": {
+    "MaxSize": 50,
+    "MaxFiles": 10,
+    "BlockedExtensions": [
+      ".jar",
+      ".exe",
+      ".exec",
+      ".msi",
+      ".com",
+      ".bat",
+      ".cmd",
+      ".nt",
+      ".scr",
+      ".ps1",
+      ".psm1",
+      ".sh",
+      ".bash",
+      ".bsh",
+      ".csh",
+      ".bash_profile",
+      ".bashrc",
+      ".profile"
+    ]
+  },
+  "ConnectionStrings": {
+    "DefaultConnection": ""
+  },
+  "LimitSettings": {
+    "MaxFiles": 100,
+    "MaxAlbums": 20
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Debug",
+      "System": "Information",
+      "Microsoft": "Information"
+    }
+  },
+  "AllowedHosts": "*"
+}
