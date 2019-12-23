@@ -1,0 +1,8 @@
+.vscode
+.idea
+bin
+obj
+*.db
+wwwroot
+fileStorage/
+*/appsettings*.json

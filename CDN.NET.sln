@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CDN.NET.backends", "CDN.NET.Backend\CDN.NET.Backend.csproj", "{1C861AB5-98DD-4181-A6FF-0384EFE9DEF6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CDN.NET.Wrapper", "CDN.NET.Wrapper\CDN.NET.Wrapper.csproj", "{8CFE9717-1DB2-4B3A-9BD3-8802C1C67931}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CDN.NET.Tests", "CDN.NET.Tests\CDN.NET.Tests.csproj", "{6DFF964D-B391-4002-9BC8-129C4DA247C7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1C861AB5-98DD-4181-A6FF-0384EFE9DEF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C861AB5-98DD-4181-A6FF-0384EFE9DEF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C861AB5-98DD-4181-A6FF-0384EFE9DEF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C861AB5-98DD-4181-A6FF-0384EFE9DEF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CFE9717-1DB2-4B3A-9BD3-8802C1C67931}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CFE9717-1DB2-4B3A-9BD3-8802C1C67931}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CFE9717-1DB2-4B3A-9BD3-8802C1C67931}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CFE9717-1DB2-4B3A-9BD3-8802C1C67931}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DFF964D-B391-4002-9BC8-129C4DA247C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DFF964D-B391-4002-9BC8-129C4DA247C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DFF964D-B391-4002-9BC8-129C4DA247C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DFF964D-B391-4002-9BC8-129C4DA247C7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
