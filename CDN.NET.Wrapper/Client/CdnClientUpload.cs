@@ -14,6 +14,12 @@ namespace CDN.NET.Wrapper.Client
 {
     public partial class CdnClient
     {
+        /// <summary>
+        /// Upload a single file with the specified values
+        /// </summary>
+        /// <param name="fileToUpload">File info with either path or stream and additional optional information</param>
+        /// <returns>The file upload response with public url and co</returns>
+        /// <exception cref="ArgumentException">Throws if the file has no valid path or filestream</exception>
         public async Task<FileUploadResponse> UploadFile(UploadFileInfo fileToUpload)
         {
             if (fileToUpload.HasPath)
@@ -31,6 +37,16 @@ namespace CDN.NET.Wrapper.Client
             throw new ArgumentException("File has to have a valid stream or path");
         }
 
+        /// <summary>
+        /// Upload a single file
+        /// </summary>
+        /// <param name="pathToFile">Path to file</param>
+        /// <param name="name">Name of file without any extensions, just the name the file should have publicly.
+        /// This does not appear in the public url of the file, that will be its unique public ID</param>
+        /// <param name="isPublic">If the file should be public or only reachable with YOUR api authentication.</param>
+        /// <param name="albumId">The Id of the album it should belong to if any.</param>
+        /// <returns>The file upload response with public url and co</returns>
+        /// <exception cref="FileNotFoundException">When the path to the file is invalid</exception>
         public async Task<FileUploadResponse> UploadFile(string pathToFile, string name = null, bool isPublic = true, int? albumId = null)
         {
             if (!File.Exists(pathToFile))
@@ -42,6 +58,15 @@ namespace CDN.NET.Wrapper.Client
             return await this.UploadFile(stream, name, isPublic, albumId).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Upload a single file
+        /// </summary>
+        /// <param name="fileStream">An open and not disposed file stream of the file</param>
+        /// <param name="name">Name of file without any extensions, just the name the file should have publicly.
+        /// This does not appear in the public url of the file, that will be its unique public ID</param>
+        /// <param name="isPublic">If the file should be public or only reachable with YOUR api authentication.</param>
+        /// <param name="albumId">The Id of the album it should belong to if any.</param>
+        /// <returns>The file upload response with public url and co</returns>
         public async Task<FileUploadResponse> UploadFile(FileStream fileStream, string name = null, bool isPublic = true, int? albumId = null)
         {
             using var form = new MultipartFormDataContent();
@@ -64,6 +89,12 @@ namespace CDN.NET.Wrapper.Client
                 form, castPayloadWithoutJsonParsing: true).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Upload multiple files
+        /// </summary>
+        /// <param name="filesToUpload">File infos with path or stream. ATTENTION: The album Id within the file infos DO NOT matter!</param>
+        /// <param name="albumId">Id of album to add these files to if any.</param>
+        /// <returns></returns>
         public async Task<IEnumerable<FileUploadResponse>> UploadFiles(UploadFileInfo[] filesToUpload, int? albumId = null)
         {
             using var form = new MultipartFormDataContent();
