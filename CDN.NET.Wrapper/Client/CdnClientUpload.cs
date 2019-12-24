@@ -19,7 +19,7 @@ namespace CDN.NET.Wrapper.Client
         /// </summary>
         /// <param name="fileToUpload">File info with either path or stream and additional optional information</param>
         /// <returns>The file upload response with public url and co</returns>
-        /// <exception cref="ArgumentException">Throws if the file has no valid path or filestream</exception>
+        /// <exception cref="ArgumentException">Throws if the file has no valid path or file stream</exception>
         public async Task<FileUploadResponse> UploadFile(UploadFileInfo fileToUpload)
         {
             if (fileToUpload.HasPath)
@@ -94,7 +94,7 @@ namespace CDN.NET.Wrapper.Client
         /// </summary>
         /// <param name="filesToUpload">File infos with path or stream. ATTENTION: The album Id within the file infos DO NOT matter!</param>
         /// <param name="albumId">Id of album to add these files to if any.</param>
-        /// <returns></returns>
+        /// <returns>The file upload response with public url and co</returns>
         public async Task<IEnumerable<FileUploadResponse>> UploadFiles(UploadFileInfo[] filesToUpload, int? albumId = null)
         {
             using var form = new MultipartFormDataContent();

@@ -61,12 +61,58 @@ namespace CDN.NET.Wrapper.Client
         /// <exception cref="HttpRequestException">When something went wrong in the request</exception>
         public Task<(bool success, string message)> TestAuthentication();
 
+        /// <summary>
+        /// Upload a single file with the specified values
+        /// </summary>
+        /// <param name="fileToUpload">File info with either path or stream and additional optional information</param>
+        /// <returns>The file upload response with public url and co</returns>
+        /// <exception cref="ArgumentException">Throws if the file has no valid path or file stream</exception>
         public Task<FileUploadResponse> UploadFile(UploadFileInfo fileToUpload);
+        
+        /// <summary>
+        /// Upload a single file
+        /// </summary>
+        /// <param name="pathToFile">Path to file</param>
+        /// <param name="name">Name of file without any extensions, just the name the file should have publicly.
+        /// This does not appear in the public url of the file, that will be its unique public ID</param>
+        /// <param name="isPublic">If the file should be public or only reachable with YOUR api authentication.</param>
+        /// <param name="albumId">The Id of the album it should belong to if any.</param>
+        /// <returns>The file upload response with public url and co</returns>
+        /// <exception cref="FileNotFoundException">When the path to the file is invalid</exception>
         public Task<FileUploadResponse> UploadFile(string pathToFile, string name = null, bool isPublic = true, int? albumId = null);
+        
+        /// <summary>
+        /// Upload a single file
+        /// </summary>
+        /// <param name="fileStream">An open and not disposed file stream of the file</param>
+        /// <param name="name">Name of file without any extensions, just the name the file should have publicly.
+        /// This does not appear in the public url of the file, that will be its unique public ID</param>
+        /// <param name="isPublic">If the file should be public or only reachable with YOUR api authentication.</param>
+        /// <param name="albumId">The Id of the album it should belong to if any.</param>
+        /// <returns>The file upload response with public url and co</returns>
         public Task<FileUploadResponse> UploadFile(FileStream fileStream, string name = null, bool isPublic = true, int? albumId = null);
+        
+        /// <summary>
+        /// Upload multiple files
+        /// </summary>
+        /// <param name="filesToUpload">File infos with path or stream. ATTENTION: The album Id within the file infos DO NOT matter!</param>
+        /// <param name="albumId">Id of album to add these files to if any.</param>
+        /// <returns>The file upload response with public url and co</returns>
         public Task<IEnumerable<FileUploadResponse>> UploadFiles(UploadFileInfo[] filesToUpload, int? albumId = null);
         
+        /// <summary>
+        /// Removes the file with the specified public id
+        /// </summary>
+        /// <param name="publicId">Public Id of the file (can have extension)</param>
+        /// <returns>Task indicating success</returns>
         public Task RemoveFile(string publicId);
+        
+        /// <summary>
+        /// Removes the files with the specified public Ids. The backend will remove all the files it has found and
+        /// ignore the ones it didn't. ALL files must be owned by you though otherwise the backend will not remove any.
+        /// </summary>
+        /// <param name="publicIds">Array of public Ids to remove (CANNOT have extension. ONLY id)</param>
+        /// <returns>IEnumerable with all the files that have been removed</returns>
         public Task<IEnumerable<FileRemoveResponse>> RemoveFiles(string[] publicIds);
         
 
