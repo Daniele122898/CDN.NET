@@ -40,5 +40,7 @@ jobs:
         mysql password: password # optional, default is
     - name: "Rename appsettings example (SUDO)"
       run: sudo mv ./CDN.NET.Backend/appsettings.json.example ./CDN.NET.Backend/appsettings.json
+    - name: "Make test file executable"
+      run: sudo chmod +x ./testE2E.sh
     - name: Test E2E
       run: ./testE2E.sh
