@@ -38,7 +38,7 @@ jobs:
         mysql user: root  # optional, default is 
         # MYSQL_PASSWORD - specified superuser password which user is power for created database
         mysql password: password # optional, default is
-    - name: "Rename appsettings example"
-      run: mv ./CDN.NET.Backend/appsettings.json.example ./CDN.NET.Backend/appsettings.json
+    - name: "Rename appsettings example (SUDO)"
+      run: sudo mv ./CDN.NET.Backend/appsettings.json.example ./CDN.NET.Backend/appsettings.json
     - name: Test E2E
       run: ./testE2E.sh
