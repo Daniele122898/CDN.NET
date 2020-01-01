@@ -31,7 +31,7 @@ jobs:
         # Version of MariaDB to use
         #mariadb version: # optional, default is latest
         # MYSQL_ROOT_PASSWORD - root superuser password
-        mysql root password: password # optional, default is 
+        mysql root password: password
         # MYSQL_DATABASE - name for the default database that is created
         #mysql database: CdnNetTest # optional, default is 
         # MYSQL_USER - create the specified user with superuser power for created database
