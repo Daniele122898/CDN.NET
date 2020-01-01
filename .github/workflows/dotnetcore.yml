@@ -39,4 +39,4 @@ jobs:
         # MYSQL_PASSWORD - specified superuser password which user is power for created database
         mysql password: password # optional, default is 
     - name: Test E2E
-      run: ./testE2E.sh
+      run: sudo ./testE2E.sh
