@@ -15,5 +15,8 @@ namespace CDN.NET.Wrapper.Utils
         // File Endpoints
         public static string FileRemove = "api/file";
         public static string FileRemoveMulti = "api/file/multi";
+        public static string FileGetAll = "api/file/getall";
+        public static string FileGet = "file";
+        public static string FileGetPrivate = "file/private";
     }
 }

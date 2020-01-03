@@ -2,7 +2,7 @@
 
 namespace CDN.NET.Wrapper.Dtos
 {
-    public class FileUploadResponse
+    public class FileResponse
     {
         public int Id { get; set; }
         public string PublicId { get; set; }

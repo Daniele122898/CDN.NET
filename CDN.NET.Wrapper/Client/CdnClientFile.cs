@@ -30,5 +30,12 @@ namespace CDN.NET.Wrapper.Client
         {
             return await this.GetAndMapResponse<IEnumerable<FileRemoveResponse>>(Endpoints.FileRemoveMulti, HttpMethods.Delete, publicIds).ConfigureAwait(false);
         }
+
+        public async Task<IEnumerable<FileResponse>> GetAllFiles()
+        {
+            return await this.GetAndMapResponse<IEnumerable<FileResponse>>(
+                Endpoints.FileGetAll
+            ).ConfigureAwait(false);
+        }
     }
 }
