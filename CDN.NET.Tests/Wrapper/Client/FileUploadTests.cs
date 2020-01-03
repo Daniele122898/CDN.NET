@@ -30,7 +30,7 @@ namespace CDN.NET.Tests.Wrapper.Client
         {
             string[] paths = GetExampleImages();
             UploadFileInfo[] files = paths.Select(path => new UploadFileInfo(path)).ToArray();
-            var uploadedFiles = await _client.UploadFiles(files).ConfigureAwait(false);
+            var uploadedFiles = (await _client.UploadFiles(files).ConfigureAwait(false)).ToList();
             Assert.IsNotEmpty(uploadedFiles);
             Assert.AreEqual(paths.Length, files.Length);
             string[] publicIds = uploadedFiles.Select(f => f.PublicId).ToArray();
