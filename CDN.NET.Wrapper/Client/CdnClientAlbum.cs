@@ -14,21 +14,21 @@ namespace CDN.NET.Wrapper.Client
                 .ConfigureAwait(false);
         }
 
-        public async Task<Album> GetPrivateAlbum(string publicId)
+        public async Task<Album> GetPrivateAlbum(int id)
         {
-            return await this.GetAndMapResponse<Album>($"{Endpoints.AlbumGetPrivate}/{publicId}")
+            return await this.GetAndMapResponse<Album>($"{Endpoints.AlbumGetPrivate}/{id.ToString()}")
                 .ConfigureAwait(false);
         }
 
-        public async Task<Album> GetAlbum(string publicId)
+        public async Task<Album> GetAlbum(int id)
         {
-            return await this.GetAndMapResponse<Album>($"{Endpoints.AlbumBase}/{publicId}")
+            return await this.GetAndMapResponse<Album>($"{Endpoints.AlbumBase}/{id.ToString()}")
                 .ConfigureAwait(false);
         }
 
-        public async Task DeleteAlbum(string publicId)
+        public async Task DeleteAlbum(int id)
         {
-            await this.GetRawResponseAndEnsureSuccess($"{Endpoints.AlbumBase}/{publicId}", HttpMethods.Delete)
+            await this.GetRawResponseAndEnsureSuccess($"{Endpoints.AlbumBase}/{id.ToString()}", HttpMethods.Delete)
                 .ConfigureAwait(false);
         }
 
