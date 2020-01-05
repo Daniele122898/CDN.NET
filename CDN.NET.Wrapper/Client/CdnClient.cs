@@ -82,6 +82,33 @@ namespace CDN.NET.Wrapper.Client
             bool disableJwtRefreshCheck = false, 
             bool castPayloadWithoutJsonParsing = false)
         {
+            var response = await this.GetRawResponseAndEnsureSuccess(endpoint, httpMethod, payload, disableJwtRefreshCheck, castPayloadWithoutJsonParsing).ConfigureAwait(false);
+            if (!expectNonJson && response.Content.Headers.ContentType.MediaType != "application/json")
+            {
+                throw new NotSupportedException("Response was not json and thus not supported");
+            }
+            return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+        }
+        
+        /// <summary>
+        /// Makes a request with the specified method. 
+        /// </summary>
+        /// <param name="endpoint">The endpoint to request</param>
+        /// <param name="httpMethod">What http method to use</param>
+        /// <param name="payload">The payload to send on a post request</param>
+        /// <param name="disableJwtRefreshCheck">Disable the automatic jwt refresh if not valid anymore</param>
+        /// <param name="castPayloadWithoutJsonParsing">Whether to cast the payload to HttpContent directly instead of json parsing.</param>
+        /// <returns>The raw response object</returns>
+        /// <exception cref="ArgumentException">If a wrong http method is passed</exception>
+        /// <exception cref="NotSupportedException">When the response is not json</exception>
+        /// <exception cref="HttpRequestException">When something went wrong in the request</exception>
+        private async Task<HttpResponseMessage> GetRawResponseAndEnsureSuccess(
+            string endpoint,
+            HttpMethods httpMethod = HttpMethods.Get,
+            object payload = null,
+            bool disableJwtRefreshCheck = false,
+            bool castPayloadWithoutJsonParsing = false)
+        {
             // JwtCheck
             if (this.CurrentAuthenticationType == AuthenticationType.Jwt && !disableJwtRefreshCheck)
             {
@@ -131,11 +158,7 @@ namespace CDN.NET.Wrapper.Client
             }
             
             await response.EnsureSuccessAndProperReturn().ConfigureAwait(false);
-            if (!expectNonJson && response.Content.Headers.ContentType.MediaType != "application/json")
-            {
-                throw new NotSupportedException("Response was not json and thus not supported");
-            }
-            return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            return response;
         }
         
         public void Dispose()

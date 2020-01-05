@@ -1,0 +1,46 @@
+name: .NET Core
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.100
+    - name: Build with dotnet
+      run: dotnet build --configuration Release
+    # - name: Shutdown Ubuntu MySQL (SUDO)
+    #   run: sudo service mysql stop # Shutdown the Default MySQL, "sudo" is necessary, please not remove it
+    # - name: Start MariaDB
+    #   uses: getong/mariadb-action@v1.1
+    #   with:
+    #     # The port of host
+    #     host port: 3306 # optional, default is 3306
+    #     # The port of container
+    #     container port: 3306 # optional, default is 3306
+    #     # --character-set-server - The character set of MySQL server
+    #     #character set server: # optional, default is utf8mb4
+    #     # --collation-server - The character collation of MySQL server
+    #     #collation server: # optional, default is utf8mb4_general_ci
+    #     # Version of MariaDB to use
+    #     #mariadb version: # optional, default is latest
+    #     # MYSQL_ROOT_PASSWORD - root superuser password
+    #     mysql root password: password
+    #     # MYSQL_DATABASE - name for the default database that is created
+    #     #mysql database: CdnNetTest # optional, default is 
+    #     # MYSQL_USER - create the specified user with superuser power for created database
+    #     #mysql user: root  # optional, default is 
+    #     # MYSQL_PASSWORD - specified superuser password which user is power for created database
+    #     #mysql password: password # optional, default is
+    # - name: "Rename appsettings example (SUDO)"
+    #   run: sudo mv ./CDN.NET.Backend/appsettings.json.example ./CDN.NET.Backend/appsettings.json
+    # - name: "Make test file executable"
+    #   run: sudo chmod +x ./testE2E.sh
+    # - name: Test E2E
+    #   run: ./testE2E.sh

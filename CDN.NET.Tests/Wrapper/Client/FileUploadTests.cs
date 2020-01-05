@@ -28,9 +28,9 @@ namespace CDN.NET.Tests.Wrapper.Client
         [Test]
         public async Task UploadMultipleFilesNoParametersAndRemove()
         {
-            string[] paths = this.GetExampleImages();
+            string[] paths = GetExampleImages();
             UploadFileInfo[] files = paths.Select(path => new UploadFileInfo(path)).ToArray();
-            var uploadedFiles = await _client.UploadFiles(files).ConfigureAwait(false);
+            var uploadedFiles = (await _client.UploadFiles(files).ConfigureAwait(false)).ToList();
             Assert.IsNotEmpty(uploadedFiles);
             Assert.AreEqual(paths.Length, files.Length);
             string[] publicIds = uploadedFiles.Select(f => f.PublicId).ToArray();
@@ -42,7 +42,7 @@ namespace CDN.NET.Tests.Wrapper.Client
         [Test]
         public async Task UploadMultipleFilesWithParametersAndRemove()
         {
-            string[] paths = this.GetExampleImages();
+            string[] paths = GetExampleImages();
             UploadFileInfo[] files = paths.Select(path => new UploadFileInfo(path) {IsPublic = false, Name = "testname"}).ToArray();
             var uploadedFiles = (await _client.UploadFiles(files).ConfigureAwait(false)).ToArray();
             Assert.IsNotEmpty(uploadedFiles);
@@ -58,7 +58,7 @@ namespace CDN.NET.Tests.Wrapper.Client
         [Test]
         public async Task UploadFileNoParametersAndRemove()
         {
-            string path = this.GetExampleImage();
+            string path = GetExampleImage();
             var response = await _client.UploadFile(path).ConfigureAwait(false);
             Assert.NotNull(response);
             Assert.IsNotEmpty(response.Url);
@@ -71,7 +71,7 @@ namespace CDN.NET.Tests.Wrapper.Client
         [Test]
         public async Task UploadFileWithParametersAndRemove()
         {
-            string path = this.GetExampleImage();
+            string path = GetExampleImage();
             var response = await _client.UploadFile(path, "testname", false);
             Assert.NotNull(response);
             Assert.IsNotEmpty(response.Url);
@@ -80,11 +80,11 @@ namespace CDN.NET.Tests.Wrapper.Client
             await _client.RemoveFile(response.PublicId);
         }
 
-        private string GetExampleImage()
+        public static string GetExampleImage()
         {
             return Path.Combine(Directory.GetCurrentDirectory(),"ExamplePictures" ,"60181180_p0_master1200.jpg");
         }
-        private string[] GetExampleImages()
+        public static string[] GetExampleImages()
         {
             return new []
             {

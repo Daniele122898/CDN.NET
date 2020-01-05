@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using CDN.NET.Backend.Data;
+using CDN.NET.Backend.Repositories.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,8 +21,23 @@ namespace CDN.NET.Backend
                 try
                 {
                     using var context = services.GetRequiredService<DataContext>();
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogInformation("Applying Migrations if needed");
                     context.Database.Migrate();
-                    // TODO Add Seeding here if needed.
+                    logger.LogInformation("Finished applying migrations.");
+                    IWebHostEnvironment env = services.GetRequiredService<IWebHostEnvironment>();
+                    if (env.IsDevelopment())
+                    {
+                        context.Database.EnsureCreated();
+                        // Seed in here
+                        if (!context.Users.Any())
+                        {
+                            logger.LogInformation("Seeding database with model user");
+                            var authRepo = services.GetRequiredService<IAuthRepository>();
+                            authRepo.Register("daniele", "123456").GetAwaiter().GetResult();
+                        }
+                    }
+
                 }
                 catch (Exception e)
                 {
@@ -34,6 +51,11 @@ namespace CDN.NET.Backend
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureLogging(logging =>
+                {
+                    logging.ClearProviders();
+                    logging.AddConsole();
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

@@ -1,6 +1,6 @@
 ﻿{
   "AppSettings": {
-    "Token": "",
+    "Token": "432v5g34f53425324hbv56g5",
     "BaseUrl": "http://localhost:5000",
     "Private": false
   },
@@ -29,7 +29,7 @@
     ]
   },
   "ConnectionStrings": {
-    "DefaultConnection": ""
+    "DefaultConnection": "Server=localhost; Database=CdnNetTest; Uid=root; Pwd=password"
   },
   "LimitSettings": {
     "MaxFiles": 100,
