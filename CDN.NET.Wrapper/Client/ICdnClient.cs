@@ -115,7 +115,13 @@ namespace CDN.NET.Wrapper.Client
         /// <returns>IEnumerable with all the files that have been removed</returns>
         public Task<IEnumerable<FileRemoveResponse>> RemoveFiles(string[] publicIds);
 
+        /// <summary>
+        /// Gets all the current users uploaded files
+        /// </summary>
+        /// <returns>All the files uploaded by the user</returns>
         public Task<IEnumerable<FileResponse>> GetAllFiles();
+        
+        // TODO maybe add file download capabilities. Might leave it to the user of the lib tho
 
 
     }
