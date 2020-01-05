@@ -123,6 +123,12 @@ namespace CDN.NET.Wrapper.Client
         
         // TODO maybe add file download capabilities. Might leave it to the user of the lib tho
 
+        public Task<IEnumerable<Album>> GetAllAlbums();
+        public Task<Album> GetPrivateAlbum(string publicId);
+        public Task<Album> GetAlbum(string publicId);
+        public Task DeleteAlbum(string publicId);
+        public Task<Album> CreateAlbum(string name, bool isPublic = true);
+
 
     }
 }

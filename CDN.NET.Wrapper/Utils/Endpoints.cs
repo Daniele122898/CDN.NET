@@ -18,5 +18,11 @@ namespace CDN.NET.Wrapper.Utils
         public static string FileGetAll = "api/file/getall";
         public static string FileGet = "file";
         public static string FileGetPrivate = "file/private";
+        
+        // Album Endpoints
+        public static string AlbumGetAll = "api/album/getall";
+        public static string AlbumGetPrivate = "api/album/private";
+        public static string AlbumBase = "api/album";
+        
     }
 }

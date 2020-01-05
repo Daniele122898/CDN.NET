@@ -80,7 +80,7 @@ namespace CDN.NET.Wrapper.Client
         /// <inheritdoc />
         public async Task DeleteApiKey()
         {
-            await GetResponse(Endpoints.ApiKey, HttpMethods.Delete).ConfigureAwait(false);
+            await GetRawResponseAndEnsureSuccess(Endpoints.ApiKey, HttpMethods.Delete).ConfigureAwait(false);
             _argonautToken = "";
             this.UseAuthenticationMethod(AuthenticationType.Jwt);
         }
