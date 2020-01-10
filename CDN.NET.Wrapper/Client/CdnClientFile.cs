@@ -38,5 +38,19 @@ namespace CDN.NET.Wrapper.Client
                 Endpoints.FileGetAll
             ).ConfigureAwait(false);
         }
+
+        /// <inheritdoc />
+        public async Task<FileResponse> GetFileInfo(string publicId)
+        {
+            return await this.GetAndMapResponse<FileResponse>($"{Endpoints.FileGet}/{publicId}")
+                .ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async Task<FileResponse> GetPrivateFileInfo(string publicId)
+        {
+            return await this.GetAndMapResponse<FileResponse>($"{Endpoints.FileGetPrivate}/{publicId}")
+                .ConfigureAwait(false);
+        }
     }
 }
