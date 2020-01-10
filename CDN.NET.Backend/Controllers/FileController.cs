@@ -9,6 +9,7 @@ using CDN.NET.Backend.Repositories.Interfaces;
 using CDN.NET.Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.FileSystemGlobbing.Internal.PathSegments;
 
 namespace CDN.NET.Backend.Controllers
 {
@@ -161,6 +162,50 @@ namespace CDN.NET.Backend.Controllers
             Response.Headers.Add("Content-Disposition", cd.ToString());
             var filePath = _utilsService.GenerateFilePath(publicId, fileFromRepo.FileExtension);
             return PhysicalFile(filePath, fileFromRepo.ContentType);
+        }
+
+        /// <summary>
+        /// Get file info without actually getting the physical file
+        /// </summary>
+        /// <param name="publicId">The public Id of the picture</param>
+        /// <returns>File information</returns>
+        [HttpGet("api/[controller]/{publicId}")]
+        public async Task<ActionResult<UFileReturnDto>> GetFileInfo(string publicId)
+        {
+            var fileFromRepo = await _fileRepo.GetFile(publicId);
+
+            if (fileFromRepo == null)
+                return NotFound();
+            
+            // Check if file is private
+            if (!fileFromRepo.IsPublic)
+                return Unauthorized("This image is not public, please use the private URL for this image");
+
+            var fileToReturn = _mapper.Map<UFileReturnDto>(fileFromRepo);
+            return fileToReturn;
+        }
+        
+        /// <summary>
+        /// Get private file info without actually getting the physical file
+        /// </summary>
+        /// <param name="publicId">The public Id of the picture</param>
+        /// <returns>File information</returns>
+        [HttpGet("api/[controller]/private/{publicId}")]
+        [Authorize]
+        public async Task<ActionResult<UFileReturnDto>> GetPrivateFileInfo(string publicId)
+        {
+            var fileFromRepo = await _fileRepo.GetFile(publicId);
+
+            if (fileFromRepo == null)
+                return NotFound();
+            
+            // Check if you have permission to see the file info
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            if (fileFromRepo.OwnerId != userId)
+                return Unauthorized("This image is not owned by you");
+
+            var fileToReturn = _mapper.Map<UFileReturnDto>(fileFromRepo);
+            return fileToReturn;
         }
     }
 }

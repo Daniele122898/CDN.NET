@@ -123,12 +123,53 @@ namespace CDN.NET.Wrapper.Client
         
         // TODO maybe add file download capabilities. Might leave it to the user of the lib tho
 
+        /// <summary>
+        /// Get all your albums
+        /// </summary>
+        /// <returns>List of all your albums</returns>
         public Task<IEnumerable<Album>> GetAllAlbums();
+        
+        /// <summary>
+        /// Get a private album of yours and all it's files (info) 
+        /// </summary>
+        /// <param name="id">Id of the album</param>
+        /// <returns>The album info and all it's files (info)</returns>
         public Task<Album> GetPrivateAlbum(int id);
+        
+        /// <summary>
+        /// Get an album and all it's files (info)
+        /// </summary>
+        /// <param name="id">The id</param>
+        /// <returns>Album</returns>
         public Task<Album> GetAlbum(int id);
+        
+        /// <summary>
+        /// Delete an album that is owned by you
+        /// </summary>
+        /// <param name="id">Id of album</param>
+        /// <returns>Success indication</returns>
         public Task DeleteAlbum(int id);
+        
+        /// <summary>
+        /// Create an album with the specified parameters
+        /// </summary>
+        /// <param name="name">Name of the album, defaults to unique Id</param>
+        /// <param name="isPublic">If the album should be public or not</param>
+        /// <returns>When successful, returns the album info</returns>
         public Task<Album> CreateAlbum(string name, bool isPublic = true);
 
+        /// <summary>
+        /// Gets the file info without the physical file
+        /// </summary>
+        /// <param name="publicId">Public Id of image</param>
+        /// <returns>The file info</returns>
+        public Task<FileResponse> GetFileInfo(string publicId);
 
+        /// <summary>
+        /// Gets the file info without the physical file of a private file
+        /// </summary>
+        /// <param name="publicId">Public Id of image</param>
+        /// <returns>The file info</returns>
+        public Task<FileResponse> GetPrivateFileInfo(string publicId);
     }
 }
