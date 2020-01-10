@@ -23,6 +23,10 @@ namespace CDN.NET.Tests.Wrapper.Client
 
             // Upload files to be used in further tests
             _uploadedFiles = (await this.UploadMultipleFilesNoParameters().ConfigureAwait(false)).ToList();
+            // Upload one private file
+            var file = await _client.UploadFile(FileUploadTests.GetExampleImage(), "privateTestfile", false);
+            Assert.NotNull(file);
+            _uploadedFiles.Add(file);
             Assert.IsNotEmpty(_uploadedFiles);
         }
 
@@ -42,6 +46,25 @@ namespace CDN.NET.Tests.Wrapper.Client
             var getallFiles = (await _client.GetAllFiles().ConfigureAwait(false)).ToList();
             Assert.IsNotEmpty(getallFiles);
             Assert.AreEqual(_uploadedFiles.Count, getallFiles.Count);
+        }
+
+        [Test]
+        public async Task GetPublicFile()
+        {
+            var fileToGet = _uploadedFiles[0];
+            var fileReceived = await _client.GetFileInfo(fileToGet.PublicId);
+            Assert.NotNull(fileReceived);
+            Assert.AreEqual(fileToGet.Id, fileReceived.Id);
+        }
+        
+        [Test]
+        public async Task GetPrivateFile()
+        {
+            var fileToGet = _uploadedFiles.FirstOrDefault(f => f.IsPublic == false);
+            Assert.NotNull(fileToGet);
+            var fileReceived = await _client.GetPrivateFileInfo(fileToGet.PublicId);
+            Assert.NotNull(fileReceived);
+            Assert.AreEqual(fileToGet.Id, fileReceived.Id);
         }
         
         private async Task<IEnumerable<FileResponse>> UploadMultipleFilesNoParameters()
