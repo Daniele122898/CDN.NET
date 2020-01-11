@@ -59,7 +59,7 @@ namespace CDN.NET.Wrapper.Client
 
             return respMaybe.Get<Maybe<T>>(
                 some: (responseString) => Maybe.FromVal(JsonSerializer.Deserialize<T>(responseString, _jsonOptions)),
-                none: Maybe.FromErr<Maybe<T>>
+                none: (e) => Maybe.FromErr<T>(e)
             );
             
         }
