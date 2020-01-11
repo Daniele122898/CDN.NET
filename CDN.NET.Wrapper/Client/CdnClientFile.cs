@@ -26,13 +26,13 @@ namespace CDN.NET.Wrapper.Client
         /// </summary>
         /// <param name="publicIds">Array of public Ids to remove (CANNOT have extension. ONLY id)</param>
         /// <returns>IEnumerable with all the files that have been removed</returns>
-        public async Task<IEnumerable<FileRemoveResponse>> RemoveFiles(string[] publicIds)
+        public async Task<Maybe<IEnumerable<FileRemoveResponse>>> RemoveFiles(string[] publicIds)
         {
             return await this.GetAndMapResponse<IEnumerable<FileRemoveResponse>>(Endpoints.FileRemoveMulti, HttpMethods.Delete, publicIds).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<FileResponse>> GetAllFiles()
+        public async Task<Maybe<IEnumerable<FileResponse>>> GetAllFiles()
         {
             return await this.GetAndMapResponse<IEnumerable<FileResponse>>(
                 Endpoints.FileGetAll
@@ -40,14 +40,14 @@ namespace CDN.NET.Wrapper.Client
         }
 
         /// <inheritdoc />
-        public async Task<FileResponse> GetFileInfo(string publicId)
+        public async Task<Maybe<FileResponse>> GetFileInfo(string publicId)
         {
             return await this.GetAndMapResponse<FileResponse>($"{Endpoints.FileGet}/{publicId}")
                 .ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<FileResponse> GetPrivateFileInfo(string publicId)
+        public async Task<Maybe<FileResponse>> GetPrivateFileInfo(string publicId)
         {
             return await this.GetAndMapResponse<FileResponse>($"{Endpoints.FileGetPrivate}/{publicId}")
                 .ConfigureAwait(false);

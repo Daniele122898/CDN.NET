@@ -112,13 +112,13 @@ namespace CDN.NET.Wrapper.Client
         /// </summary>
         /// <param name="publicIds">Array of public Ids to remove (CANNOT have extension. ONLY id)</param>
         /// <returns>IEnumerable with all the files that have been removed</returns>
-        public Task<IEnumerable<FileRemoveResponse>> RemoveFiles(string[] publicIds);
+        public Task<Maybe<IEnumerable<FileRemoveResponse>>> RemoveFiles(string[] publicIds);
 
         /// <summary>
         /// Gets all the current users uploaded files
         /// </summary>
         /// <returns>All the files uploaded by the user</returns>
-        public Task<IEnumerable<FileResponse>> GetAllFiles();
+        public Task<Maybe<IEnumerable<FileResponse>>> GetAllFiles();
         
         // TODO maybe add file download capabilities. Might leave it to the user of the lib tho
 
@@ -162,13 +162,13 @@ namespace CDN.NET.Wrapper.Client
         /// </summary>
         /// <param name="publicId">Public Id of image</param>
         /// <returns>The file info</returns>
-        public Task<FileResponse> GetFileInfo(string publicId);
+        public Task<Maybe<FileResponse>> GetFileInfo(string publicId);
 
         /// <summary>
         /// Gets the file info without the physical file of a private file
         /// </summary>
         /// <param name="publicId">Public Id of image</param>
         /// <returns>The file info</returns>
-        public Task<FileResponse> GetPrivateFileInfo(string publicId);
+        public Task<Maybe<FileResponse>> GetPrivateFileInfo(string publicId);
     }
 }
