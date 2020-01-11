@@ -47,9 +47,6 @@ namespace CDN.NET.Wrapper.Client
         /// <param name="castPayloadWithoutJsonParsing">Whether to cast the payload to HttpContent directly instead of json parsing.</param>
         /// <typeparam name="T">The type that is expected to be returned and parsed</typeparam>
         /// <returns>The parsed return</returns>
-        /// <exception cref="ArgumentException">If a wrong http method is passed</exception>
-        /// <exception cref="NotSupportedException">When the response cannot be parsed</exception>
-        /// <exception cref="HttpRequestException">When something went wrong in the request</exception>
         private async Task<Maybe<T>> GetAndMapResponse<T>(
             string endpoint,
             HttpMethods httpMethod = HttpMethods.Get,
@@ -77,9 +74,6 @@ namespace CDN.NET.Wrapper.Client
         /// <param name="disableJwtRefreshCheck">Disable the automatic jwt refresh if not valid anymore</param>
         /// <param name="castPayloadWithoutJsonParsing">Whether to cast the payload to HttpContent directly instead of json parsing.</param>
         /// <returns>The raw string return</returns>
-        /// <exception cref="ArgumentException">If a wrong http method is passed</exception>
-        /// <exception cref="NotSupportedException">When the response is not json</exception>
-        /// <exception cref="HttpRequestException">When something went wrong in the request</exception>
         private async Task<Maybe<string>> GetResponse(
             string endpoint,
             HttpMethods httpMethod = HttpMethods.Get,
@@ -116,9 +110,6 @@ namespace CDN.NET.Wrapper.Client
         /// <param name="disableJwtRefreshCheck">Disable the automatic jwt refresh if not valid anymore</param>
         /// <param name="castPayloadWithoutJsonParsing">Whether to cast the payload to HttpContent directly instead of json parsing.</param>
         /// <returns>The raw response object</returns>
-        /// <exception cref="ArgumentException">If a wrong http method is passed</exception>
-        /// <exception cref="NotSupportedException">When the response is not json</exception>
-        /// <exception cref="HttpRequestException">When something went wrong in the request</exception>
         private async Task<Maybe<HttpResponseMessage>> GetRawResponseAndEnsureSuccess(
             string endpoint,
             HttpMethods httpMethod = HttpMethods.Get,
@@ -129,7 +120,11 @@ namespace CDN.NET.Wrapper.Client
             // JwtCheck
             if (this.CurrentAuthenticationType == AuthenticationType.Jwt && !disableJwtRefreshCheck)
             {
-                await this.CheckTokenValidityAndRefresh().ConfigureAwait(false);
+                var validMaybe = await this.CheckTokenValidityAndRefresh().ConfigureAwait(false);
+                if (validMaybe.HasError)
+                {
+                    return Maybe.FromErr<HttpResponseMessage>(validMaybe.Error);
+                }
             }
 
             HttpResponseMessage response;

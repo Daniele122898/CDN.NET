@@ -13,11 +13,11 @@ namespace CDN.NET.Wrapper.Client
         /// </summary>
         /// <param name="publicId">Public Id of the file (can have extension)</param>
         /// <returns>Task indicating success</returns>
-        public async Task RemoveFile(string publicId)
+        public async Task<Maybe<bool>> RemoveFile(string publicId)
         {
-            await this.GetRawResponseAndEnsureSuccess(
-                $"{Endpoints.FileRemove}/{publicId}", 
-                HttpMethods.Delete).ConfigureAwait(false);
+            return (await this.GetRawResponseAndEnsureSuccess(
+                $"{Endpoints.FileRemove}/{publicId}",
+                HttpMethods.Delete).ConfigureAwait(false)).ToSuccessMaybe();
         }
 
         /// <summary>

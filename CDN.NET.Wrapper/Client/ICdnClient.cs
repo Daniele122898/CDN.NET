@@ -20,8 +20,7 @@ namespace CDN.NET.Wrapper.Client
         /// <param name="username">Your username</param>
         /// <param name="password">Your password</param>
         /// <returns>Returns your user info on success and logs you into the client</returns>
-        /// <exception cref="HttpRequestException">When something went wrong in the request</exception>
-        public Task<LoginResponse> Login(string username, string password);
+        public Task<Maybe<LoginResponse>> Login(string username, string password);
         
         /// <summary>
         /// Create an account with the specified username and password
@@ -29,15 +28,13 @@ namespace CDN.NET.Wrapper.Client
         /// <param name="username">Your Username</param>
         /// <param name="password">Your password</param>
         /// <returns>Returns your username and Id on success</returns>
-        /// <exception cref="HttpRequestException">When something went wrong in the request</exception>
-        public Task<User> Register(string username, string password);
+        public Task<Maybe<User>> Register(string username, string password);
         
         /// <summary>
         /// Uses your client token to generate a new Api Key
         /// </summary>
-        /// <returns>Returns a string with your Api key and stores it in the client or null if unexpected errors happen.</returns>
-        /// <exception cref="HttpRequestException">When something went wrong in the request</exception>
-        public Task<string> GetApiKey();
+        /// <returns>Returns a string with your Api key and stores it in the client</returns>
+        public Task<Maybe<string>> GetApiKey();
         
         /// <summary>
         /// Uses your client token to remove your API key (on the server not from the client)
@@ -45,9 +42,8 @@ namespace CDN.NET.Wrapper.Client
         /// If you did not use the login method before your jwt token cannot be refreshed and thus the client
         /// cannot authenticate until you login.
         /// </summary>
-        /// <returns>Task complete or error</returns>
-        /// <exception cref="HttpRequestException">When something went wrong in the request</exception>
-        public Task DeleteApiKey();
+        /// <returns>Maybe indicating success or failiure</returns>
+        public Task<Maybe<bool>> DeleteApiKey();
         
         /// <summary>
         /// Change the authentication method used in the client
@@ -104,7 +100,7 @@ namespace CDN.NET.Wrapper.Client
         /// </summary>
         /// <param name="publicId">Public Id of the file (can have extension)</param>
         /// <returns>Task indicating success</returns>
-        public Task RemoveFile(string publicId);
+        public Task<Maybe<bool>> RemoveFile(string publicId);
         
         /// <summary>
         /// Removes the files with the specified public Ids. The backend will remove all the files it has found and
@@ -126,28 +122,28 @@ namespace CDN.NET.Wrapper.Client
         /// Get all your albums
         /// </summary>
         /// <returns>List of all your albums</returns>
-        public Task<IEnumerable<Album>> GetAllAlbums();
+        public Task<Maybe<IEnumerable<Album>>> GetAllAlbums();
         
         /// <summary>
         /// Get a private album of yours and all it's files (info) 
         /// </summary>
         /// <param name="id">Id of the album</param>
         /// <returns>The album info and all it's files (info)</returns>
-        public Task<Album> GetPrivateAlbum(int id);
+        public Task<Maybe<Album>> GetPrivateAlbum(int id);
         
         /// <summary>
         /// Get an album and all it's files (info)
         /// </summary>
         /// <param name="id">The id</param>
         /// <returns>Album</returns>
-        public Task<Album> GetAlbum(int id);
+        public Task<Maybe<Album>> GetAlbum(int id);
         
         /// <summary>
         /// Delete an album that is owned by you
         /// </summary>
         /// <param name="id">Id of album</param>
         /// <returns>Success indication</returns>
-        public Task DeleteAlbum(int id);
+        public Task<Maybe<bool>> DeleteAlbum(int id);
         
         /// <summary>
         /// Create an album with the specified parameters
@@ -155,7 +151,7 @@ namespace CDN.NET.Wrapper.Client
         /// <param name="name">Name of the album, defaults to unique Id</param>
         /// <param name="isPublic">If the album should be public or not</param>
         /// <returns>When successful, returns the album info</returns>
-        public Task<Album> CreateAlbum(string name, bool isPublic = true);
+        public Task<Maybe<Album>> CreateAlbum(string name, bool isPublic = true);
 
         /// <summary>
         /// Gets the file info without the physical file

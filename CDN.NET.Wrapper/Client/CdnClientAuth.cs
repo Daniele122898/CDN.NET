@@ -12,7 +12,6 @@ namespace CDN.NET.Wrapper.Client
 {
     public partial class CdnClient
     {
-
         public string CurrentToken
         {
             get
@@ -28,7 +27,7 @@ namespace CDN.NET.Wrapper.Client
                 }
             }
         }
-        
+
         private const string ApiAuthType = "X-Argonaut";
 
         private string _argonautToken;
@@ -36,53 +35,78 @@ namespace CDN.NET.Wrapper.Client
         private UserInternal _userInfo = new UserInternal();
 
         /// <inheritdoc />
-        public async Task<LoginResponse> Login(string username, string password)
+        public async Task<Maybe<LoginResponse>> Login(string username, string password)
         {
             var userCreds = new UserCredentials() {Username = username, Password = password};
-            LoginResponse loginResponse = await GetAndMapResponse<LoginResponse>(Endpoints.Login, HttpMethods.Post, userCreds, true).ConfigureAwait(false);
+            Maybe<LoginResponse> loginResponse =
+                await GetAndMapResponse<LoginResponse>(Endpoints.Login, HttpMethods.Post, userCreds, true)
+                    .ConfigureAwait(false);
 
-            _userInfo.Id = loginResponse.User.Id;
-            _userInfo.Username = username;
-            _userInfo.Password = password;
-            _jwtToken = loginResponse.Token;
-            
-            this.UseAuthenticationMethod(AuthenticationType.Jwt);
-            return loginResponse;
+            return loginResponse.Do(
+                loginResp =>
+                {
+                    _userInfo.Id = loginResp.User.Id;
+                    _userInfo.Username = username;
+                    _userInfo.Password = password;
+                    _jwtToken = loginResp.Token;
+
+                    this.UseAuthenticationMethod(AuthenticationType.Jwt);
+                }
+            );
         }
 
         /// <inheritdoc />
-        public async Task<User> Register(string username, string password)
+        public async Task<Maybe<User>> Register(string username, string password)
         {
-            var userCreds = new UserCredentials(){Username = username, Password = password};
-            User userResponse = await GetAndMapResponse<User>(Endpoints.Register, HttpMethods.Post, userCreds, true).ConfigureAwait(false);
-            _userInfo.Id = userResponse.Id;
-            _userInfo.Username = username;
-            _userInfo.Password = password;
+            var userCreds = new UserCredentials() {Username = username, Password = password};
+            Maybe<User> userResponseMaybe =
+                await GetAndMapResponse<User>(Endpoints.Register, HttpMethods.Post, userCreds, true)
+                    .ConfigureAwait(false);
 
-            return userResponse;
-        }
-
-        /// <inheritdoc />
-        public async Task<string> GetApiKey()
-        {
-            string token = await GetResponse(Endpoints.ApiKey)
-                .ConfigureAwait(false);
-            if (string.IsNullOrWhiteSpace(token))
+            return userResponseMaybe.Do((userResponse) =>
             {
-                return null;
-            }
-
-            _argonautToken = token;
-            this.UseAuthenticationMethod(AuthenticationType.ArgonautToken);
-            return token;
+                _userInfo.Id = userResponse.Id;
+                _userInfo.Username = username;
+                _userInfo.Password = password;
+            });
         }
 
         /// <inheritdoc />
-        public async Task DeleteApiKey()
+        public async Task<Maybe<string>> GetApiKey()
         {
-            await GetRawResponseAndEnsureSuccess(Endpoints.ApiKey, HttpMethods.Delete).ConfigureAwait(false);
-            _argonautToken = "";
-            this.UseAuthenticationMethod(AuthenticationType.Jwt);
+            Maybe<string> tokenMaybe = await GetResponse(Endpoints.ApiKey)
+                .ConfigureAwait(false);
+
+            return tokenMaybe.Get<Maybe<string>>(
+                (token) =>
+                {
+                    if (string.IsNullOrWhiteSpace(token))
+                    {
+                        return Maybe.FromErr<string>("Failed to get token");
+                    }
+
+                    _argonautToken = token;
+                    this.UseAuthenticationMethod(AuthenticationType.ArgonautToken);
+                    return tokenMaybe;
+                },
+                (e) => tokenMaybe
+            );
+        }
+
+        /// <inheritdoc />
+        public async Task<Maybe<bool>> DeleteApiKey()
+        {
+            var resp = await GetRawResponseAndEnsureSuccess(Endpoints.ApiKey, HttpMethods.Delete).ConfigureAwait(false);
+
+            return resp.Get<Maybe<bool>>(
+                some: (respMsg) =>
+                {
+                    _argonautToken = "";
+                    this.UseAuthenticationMethod(AuthenticationType.Jwt);
+                    return Maybe.FromVal(true);
+                },
+                none: Maybe.FromErr<bool>
+            );
         }
 
 
@@ -93,17 +117,17 @@ namespace CDN.NET.Wrapper.Client
             {
                 case AuthenticationType.ArgonautToken:
                     CurrentAuthenticationType = AuthenticationType.ArgonautToken;
-                    
+
                     _client.DefaultRequestHeaders.Authorization = null;
                     _client.DefaultRequestHeaders.Add(ApiAuthType, _argonautToken);
-                    
+
                     break;
                 case AuthenticationType.Jwt:
                     CurrentAuthenticationType = AuthenticationType.Jwt;
 
                     _client.DefaultRequestHeaders.Remove(ApiAuthType);
                     _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
-                    
+
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(authenticationType), "Non supported Enum type");
@@ -125,25 +149,28 @@ namespace CDN.NET.Wrapper.Client
         /// <summary>
         /// Check if the current token is still valid and if not refresh automatically
         /// </summary>
-        /// <returns>Completed Task if successfull</returns>
-        /// <exception cref="AuthenticationException">If the token could not be refreshed</exception>
-        private async Task CheckTokenValidityAndRefresh()
+        /// <returns>Maybe indicating success or error</returns>
+        private async Task<Maybe<bool>> CheckTokenValidityAndRefresh()
         {
             var jwtHandler = new JwtSecurityTokenHandler();
             var jwtToken = jwtHandler.ReadJwtToken(_jwtToken);
             // Token is still valid so we're fine
             if (jwtToken.ValidTo > DateTime.UtcNow.AddSeconds(30))
             {
-                return;
+                return Maybe.FromVal(true);
             }
+
             // Otherwise check if we have user info and then renew
             if (string.IsNullOrWhiteSpace(_userInfo.Username) || string.IsNullOrWhiteSpace(_userInfo.Password))
             {
-                throw new AuthenticationException("Your JWT token is not valid anymore and no username and password have been passed to the client, " +
-                                                  "thus the token could not be refreshed automatically.");
+                return Maybe.FromErr<bool>(
+                    new AuthenticationException(
+                        "Your JWT token is not valid anymore and no username and password have been passed to the client, " +
+                        "thus the token could not be refreshed automatically."));
             }
 
             await this.Login(_userInfo.Username, _userInfo.Password).ConfigureAwait(false);
+            return Maybe.FromVal<bool>(true);
         }
     }
 }
