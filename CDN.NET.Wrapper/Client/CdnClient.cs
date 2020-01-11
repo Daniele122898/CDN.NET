@@ -57,9 +57,14 @@ namespace CDN.NET.Wrapper.Client
             bool disableJwtRefreshCheck = false,
             bool castPayloadWithoutJsonParsing = false) where T : class
         {
-            string responseString = await GetResponse(endpoint, httpMethod, payload, false, disableJwtRefreshCheck,
+            var respMaybe = await GetResponse(endpoint, httpMethod, payload, false, disableJwtRefreshCheck,
                 castPayloadWithoutJsonParsing).ConfigureAwait(false);
-            return new Maybe<T>(JsonSerializer.Deserialize<T>(responseString, _jsonOptions));
+
+            return respMaybe.Get<Maybe<T>>(
+                some: (responseString) => Maybe.FromVal(JsonSerializer.Deserialize<T>(responseString, _jsonOptions)),
+                none: Maybe.FromErr<Maybe<T>>
+            );
+            
         }
 
         /// <summary>
@@ -86,23 +91,20 @@ namespace CDN.NET.Wrapper.Client
             var respMaybe = await this.GetRawResponseAndEnsureSuccess(endpoint, httpMethod, payload,
                 disableJwtRefreshCheck, castPayloadWithoutJsonParsing).ConfigureAwait(false);
 
-            return (await respMaybe.GetAsync<Maybe<string>>(
+            return (await respMaybe.Get<Task<Maybe<string>>>(
                 some: async (HttpResponseMessage response) =>
                 {
-                    return (await Maybe<string>.InitAsync(async () =>
+                    if (!expectNonJson && response.Content.Headers.ContentType.MediaType != "application/json")
                     {
-                        if (!expectNonJson && response.Content.Headers.ContentType.MediaType != "application/json")
-                        {
-                            var ex = new NotSupportedException("Response was not json and thus not supported");
-                            return (null, ex);
-                        }
-
-                        var respStr = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                        return (respStr, null);
-                    }).ConfigureAwait(false));
+                        var ex = new NotSupportedException("Response was not json and thus not supported");
+                        return Maybe.FromErr<string>(ex);
+                    }
+                    
+                    var respStr = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    return Maybe.FromVal(respStr);
                 },
-                none: (Exception e) => new Maybe<string>(e)
-            ).ConfigureAwait(false));
+                none: Maybe.FromErrTask<string>
+                ).ConfigureAwait(false));
         }
 
         /// <summary>

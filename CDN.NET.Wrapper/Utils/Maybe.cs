@@ -10,26 +10,6 @@ namespace CDN.NET.Wrapper.Utils
         
         public bool HasValue => Value != null;
         public bool HasException => Error != null;
-        
-        public static Maybe<T> Init<T>(Func<(T Value, Exception error)> initializer) where T: class
-        {
-            return new Maybe<T>(initializer);
-        }
-        
-        public static async Task<Maybe<T>> InitAsync(Func<Task<(T Value, Exception error)>> initializer)
-        {
-            (T val, Exception ex) = await initializer().ConfigureAwait(false);
-            if (val != null)
-            {
-                return new Maybe<T>(val);
-            }
-
-            if (ex != null)
-            {
-                return new Maybe<T>(ex);
-            }
-            throw new NullReferenceException("Your initializer failed to deliver a value or exception. At least one of both must be initialized");
-        }
 
         public Maybe(Func<(T Value, Exception error)> initializer)
         {
@@ -115,35 +95,48 @@ namespace CDN.NET.Wrapper.Utils
 
             throw new NullReferenceException($"Both {nameof(Value)}, {nameof(Error)} are null");
         }
-        
-        public async Task<T2> GetAsync<T2>(Func<T, Task<T2>> some, Func<Exception, Task<T2>> none) where T2: class
+    }
+
+    public static class Maybe
+    {
+        public static Maybe<T> Init<T>(Func<(T Value, Exception error)> initializer) where T: class
         {
-            if (this.HasValue)
-            {
-                return (await some(this.Value).ConfigureAwait(false));
-            }
-
-            if (this.HasException)
-            {
-                return (await none(this.Error).ConfigureAwait(false));
-            }
-
-            throw new NullReferenceException($"Both {nameof(Value)}, {nameof(Error)} are null");
+            return new Maybe<T>(initializer);
         }
         
-        public async Task<T2> GetAsync<T2>(Func<T, Task<T2>> some, Func<Exception, T2> none) where T2: class
+        public static async Task<Maybe<T>> InitAsync<T>(Func<Task<(T Value, Exception error)>> initializer) where T: class
         {
-            if (this.HasValue)
+            (T val, Exception ex) = await initializer().ConfigureAwait(false);
+            if (val != null)
             {
-                return (await some(this.Value).ConfigureAwait(false));
+                return new Maybe<T>(val);
             }
 
-            if (this.HasException)
+            if (ex != null)
             {
-                return none(this.Error);
+                return new Maybe<T>(ex);
             }
+            throw new NullReferenceException("Your initializer failed to deliver a value or exception. At least one of both must be initialized");
+        }
 
-            throw new NullReferenceException($"Both {nameof(Value)}, {nameof(Error)} are null");
+        public static Maybe<T> FromVal<T>(T val) where T: class
+        {
+            return new Maybe<T>(val);
+        }
+        
+        public static Maybe<T> FromErr<T>(Exception e) where T: class
+        {
+            return new Maybe<T>(e);
+        }
+
+        public static Task<Maybe<T>> FromValTask<T>(T val) where T : class
+        {
+            return Task.FromResult(new Maybe<T>(val));
+        }
+        
+        public static Task<Maybe<T>> FromErrTask<T>(Exception e) where T : class
+        {
+            return Task.FromResult(new Maybe<T>(e));
         }
     }
 }

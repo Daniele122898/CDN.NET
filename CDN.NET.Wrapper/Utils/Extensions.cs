@@ -7,18 +7,16 @@ namespace CDN.NET.Wrapper.Utils
     {
         public static async Task<Maybe<HttpResponseMessage>> EnsureSuccessAndProperReturn(this HttpResponseMessage resp)
         {
-            return (await Maybe<HttpResponseMessage>.InitAsync(async () =>
+            if (!resp.IsSuccessStatusCode)
             {
-                if (!resp.IsSuccessStatusCode)
-                {
-                    var ex = new HttpRequestException(
-                        $"Response status code does not indicate success: " +
-                        $"{((int) resp.StatusCode)} \n" +
-                        $"Reason: {await resp.Content.ReadAsStringAsync().ConfigureAwait(false)}");
-                    return (null, ex);
-                }
-                return (resp, null);
-            }).ConfigureAwait(false));
+                var ex = new HttpRequestException(
+                    $"Response status code does not indicate success: " +
+                    $"{((int) resp.StatusCode)} \n" +
+                    $"Reason: {await resp.Content.ReadAsStringAsync().ConfigureAwait(false)}");
+                return Maybe.FromErr<HttpResponseMessage>(ex);
+            }
+
+            return Maybe.FromVal(resp);
         }
     }
 }
