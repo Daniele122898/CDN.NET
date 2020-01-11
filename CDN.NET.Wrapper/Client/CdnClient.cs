@@ -16,13 +16,13 @@ namespace CDN.NET.Wrapper.Client
         {
             PropertyNameCaseInsensitive = true
         };
-        
+
         private readonly HttpClient _client;
 
         public CdnClient(string baseAddress)
         {
             Uri baseAddUri = new Uri(baseAddress);
-            
+
             _client = new HttpClient()
             {
                 BaseAddress = baseAddUri
@@ -50,15 +50,16 @@ namespace CDN.NET.Wrapper.Client
         /// <exception cref="ArgumentException">If a wrong http method is passed</exception>
         /// <exception cref="NotSupportedException">When the response cannot be parsed</exception>
         /// <exception cref="HttpRequestException">When something went wrong in the request</exception>
-        private async Task<T> GetAndMapResponse<T>(
-            string endpoint, 
-            HttpMethods httpMethod = HttpMethods.Get, 
-            object payload = null, 
+        private async Task<Maybe<T>> GetAndMapResponse<T>(
+            string endpoint,
+            HttpMethods httpMethod = HttpMethods.Get,
+            object payload = null,
             bool disableJwtRefreshCheck = false,
-            bool castPayloadWithoutJsonParsing = false)
+            bool castPayloadWithoutJsonParsing = false) where T : class
         {
-            string responseString = await GetResponse(endpoint, httpMethod, payload, false, disableJwtRefreshCheck, castPayloadWithoutJsonParsing).ConfigureAwait(false);
-            return JsonSerializer.Deserialize<T>(responseString, _jsonOptions);
+            string responseString = await GetResponse(endpoint, httpMethod, payload, false, disableJwtRefreshCheck,
+                castPayloadWithoutJsonParsing).ConfigureAwait(false);
+            return new Maybe<T>(JsonSerializer.Deserialize<T>(responseString, _jsonOptions));
         }
 
         /// <summary>
@@ -74,22 +75,36 @@ namespace CDN.NET.Wrapper.Client
         /// <exception cref="ArgumentException">If a wrong http method is passed</exception>
         /// <exception cref="NotSupportedException">When the response is not json</exception>
         /// <exception cref="HttpRequestException">When something went wrong in the request</exception>
-        private async Task<string> GetResponse(
-            string endpoint, 
-            HttpMethods httpMethod = HttpMethods.Get, 
-            object payload = null, 
-            bool expectNonJson = true, 
-            bool disableJwtRefreshCheck = false, 
+        private async Task<Maybe<string>> GetResponse(
+            string endpoint,
+            HttpMethods httpMethod = HttpMethods.Get,
+            object payload = null,
+            bool expectNonJson = true,
+            bool disableJwtRefreshCheck = false,
             bool castPayloadWithoutJsonParsing = false)
         {
-            var response = await this.GetRawResponseAndEnsureSuccess(endpoint, httpMethod, payload, disableJwtRefreshCheck, castPayloadWithoutJsonParsing).ConfigureAwait(false);
-            if (!expectNonJson && response.Content.Headers.ContentType.MediaType != "application/json")
-            {
-                throw new NotSupportedException("Response was not json and thus not supported");
-            }
-            return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var respMaybe = await this.GetRawResponseAndEnsureSuccess(endpoint, httpMethod, payload,
+                disableJwtRefreshCheck, castPayloadWithoutJsonParsing).ConfigureAwait(false);
+
+            return (await respMaybe.GetAsync<Maybe<string>>(
+                some: async (HttpResponseMessage response) =>
+                {
+                    return (await Maybe<string>.InitAsync(async () =>
+                    {
+                        if (!expectNonJson && response.Content.Headers.ContentType.MediaType != "application/json")
+                        {
+                            var ex = new NotSupportedException("Response was not json and thus not supported");
+                            return (null, ex);
+                        }
+
+                        var respStr = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                        return (respStr, null);
+                    }).ConfigureAwait(false));
+                },
+                none: (Exception e) => new Maybe<string>(e)
+            ).ConfigureAwait(false));
         }
-        
+
         /// <summary>
         /// Makes a request with the specified method. 
         /// </summary>
@@ -102,7 +117,7 @@ namespace CDN.NET.Wrapper.Client
         /// <exception cref="ArgumentException">If a wrong http method is passed</exception>
         /// <exception cref="NotSupportedException">When the response is not json</exception>
         /// <exception cref="HttpRequestException">When something went wrong in the request</exception>
-        private async Task<HttpResponseMessage> GetRawResponseAndEnsureSuccess(
+        private async Task<Maybe<HttpResponseMessage>> GetRawResponseAndEnsureSuccess(
             string endpoint,
             HttpMethods httpMethod = HttpMethods.Get,
             object payload = null,
@@ -114,7 +129,7 @@ namespace CDN.NET.Wrapper.Client
             {
                 await this.CheckTokenValidityAndRefresh().ConfigureAwait(false);
             }
-            
+
             HttpResponseMessage response;
 
             switch (httpMethod)
@@ -133,6 +148,7 @@ namespace CDN.NET.Wrapper.Client
                         string json = JsonSerializer.Serialize(payload, _jsonOptions);
                         content = new StringContent(json, Encoding.UTF8, "application/json");
                     }
+
                     response = await _client.PostAsync(endpoint, content).ConfigureAwait(false);
                     break;
                 case HttpMethods.Delete:
@@ -152,19 +168,19 @@ namespace CDN.NET.Wrapper.Client
 
                         response = await _client.SendAsync(requestMessage).ConfigureAwait(false);
                     }
+
                     break;
                 default:
                     throw new ArgumentException("Method not supported", nameof(httpMethod));
             }
-            
-            await response.EnsureSuccessAndProperReturn().ConfigureAwait(false);
-            return response;
+
+            var successMaybe = await response.EnsureSuccessAndProperReturn().ConfigureAwait(false);
+            return successMaybe;
         }
-        
+
         public void Dispose()
         {
             _client.Dispose();
         }
-        
     }
 }
