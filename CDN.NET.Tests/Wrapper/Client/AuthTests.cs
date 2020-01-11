@@ -20,8 +20,9 @@ namespace CDN.NET.Tests.Wrapper.Client
         {
             using var client = new CdnClient(Constants.BaseUrl);
             await client.Login("daniele", "123456");
-            string token = await client.GetApiKey();
-            Assert.IsNotEmpty(token);
+            var tokenMaybe = await client.GetApiKey();
+            Assert.IsTrue(tokenMaybe.HasValue);
+            Assert.IsNotEmpty(tokenMaybe.Value);
             (bool success, string message) = await client.TestAuthentication();
             Assert.IsTrue(success);
             Assert.IsNotEmpty(message);
@@ -32,8 +33,9 @@ namespace CDN.NET.Tests.Wrapper.Client
         {
             using var client = new CdnClient(Constants.BaseUrl);
             await client.Login("daniele", "123456");
-            string token = await client.GetApiKey();
-            Assert.IsNotEmpty(token);
+            var tokenMaybe = await client.GetApiKey();
+            Assert.IsTrue(tokenMaybe.HasValue);
+            Assert.IsNotEmpty(tokenMaybe.Value);
             await client.DeleteApiKey();
             Assert.AreEqual(AuthenticationType.Jwt, client.CurrentAuthenticationType);
         }
@@ -62,7 +64,8 @@ namespace CDN.NET.Tests.Wrapper.Client
         {
             using var client = new CdnClient(Constants.BaseUrl);
             var registerResponse = await client.Register("testUser", "123456");
-            Assert.AreEqual("testuser", registerResponse.Username);
+            Assert.IsTrue(registerResponse.HasValue);
+            Assert.AreEqual("testuser", registerResponse.Value.Username);
         }
 
         [Test]
@@ -70,9 +73,10 @@ namespace CDN.NET.Tests.Wrapper.Client
         {
             using var client = new CdnClient(Constants.BaseUrl);
             var loginDto = await client.Login("daniele", "123456");
-            Assert.AreEqual("daniele", loginDto.User.Username);
-            Assert.IsNotNull(loginDto.Token);
-            Assert.IsNotEmpty(loginDto.Token);
+            Assert.IsTrue(loginDto.HasValue);
+            Assert.AreEqual("daniele", loginDto.Value.User.Username);
+            Assert.IsNotNull(loginDto.Value.Token);
+            Assert.IsNotEmpty(loginDto.Value.Token);
         }
     }
 }
