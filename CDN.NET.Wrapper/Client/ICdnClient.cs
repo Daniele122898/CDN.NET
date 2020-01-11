@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CDN.NET.Wrapper.Dtos;
 using CDN.NET.Wrapper.Enums;
 using CDN.NET.Wrapper.Models;
+using CDN.NET.Wrapper.Utils;
 
 namespace CDN.NET.Wrapper.Client
 {
@@ -66,8 +67,7 @@ namespace CDN.NET.Wrapper.Client
         /// </summary>
         /// <param name="fileToUpload">File info with either path or stream and additional optional information</param>
         /// <returns>The file upload response with public url and co</returns>
-        /// <exception cref="ArgumentException">Throws if the file has no valid path or file stream</exception>
-        public Task<FileResponse> UploadFile(UploadFileInfo fileToUpload);
+        public Task<Maybe<FileResponse>> UploadFile(UploadFileInfo fileToUpload);
         
         /// <summary>
         /// Upload a single file
@@ -78,8 +78,7 @@ namespace CDN.NET.Wrapper.Client
         /// <param name="isPublic">If the file should be public or only reachable with YOUR api authentication.</param>
         /// <param name="albumId">The Id of the album it should belong to if any.</param>
         /// <returns>The file upload response with public url and co</returns>
-        /// <exception cref="FileNotFoundException">When the path to the file is invalid</exception>
-        public Task<FileResponse> UploadFile(string pathToFile, string name = null, bool isPublic = true, int? albumId = null);
+        public Task<Maybe<FileResponse>> UploadFile(string pathToFile, string name = null, bool isPublic = true, int? albumId = null);
         
         /// <summary>
         /// Upload a single file
@@ -90,7 +89,7 @@ namespace CDN.NET.Wrapper.Client
         /// <param name="isPublic">If the file should be public or only reachable with YOUR api authentication.</param>
         /// <param name="albumId">The Id of the album it should belong to if any.</param>
         /// <returns>The file upload response with public url and co</returns>
-        public Task<FileResponse> UploadFile(FileStream fileStream, string name = null, bool isPublic = true, int? albumId = null);
+        public Task<Maybe<FileResponse>> UploadFile(FileStream fileStream, string name = null, bool isPublic = true, int? albumId = null);
         
         /// <summary>
         /// Upload multiple files
@@ -98,7 +97,7 @@ namespace CDN.NET.Wrapper.Client
         /// <param name="filesToUpload">File infos with path or stream. ATTENTION: The album Id within the file infos DO NOT matter!</param>
         /// <param name="albumId">Id of album to add these files to if any.</param>
         /// <returns>The file upload response with public url and co</returns>
-        public Task<IEnumerable<FileResponse>> UploadFiles(UploadFileInfo[] filesToUpload, int? albumId = null);
+        public Task<Maybe<IEnumerable<FileResponse>>> UploadFiles(UploadFileInfo[] filesToUpload, int? albumId = null);
         
         /// <summary>
         /// Removes the file with the specified public id
