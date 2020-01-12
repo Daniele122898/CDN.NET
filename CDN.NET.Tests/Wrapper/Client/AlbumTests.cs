@@ -19,14 +19,15 @@ namespace CDN.NET.Tests.Wrapper.Client
         {
             _client = new CdnClient(Constants.BaseUrl);
             var resp = await _client.Login("daniele", "123456");
-            Assert.IsNotEmpty(resp.Token);
+            Assert.IsTrue(resp.HasValue);
+            Assert.IsNotEmpty(resp.Value.Token);
 
             // Create an album that is going to be deleted
-            _albumToBeDeleted = await _client.CreateAlbum("testAlbum").ConfigureAwait(false);
+            _albumToBeDeleted = (await _client.CreateAlbum("testAlbum").ConfigureAwait(false)).Value;
             Assert.NotNull(_albumToBeDeleted);
-            _albumUsedForTestingPrivate = await _client.CreateAlbum("testAlbum2", false).ConfigureAwait(false);
+            _albumUsedForTestingPrivate = (await _client.CreateAlbum("testAlbum2", false).ConfigureAwait(false)).Value;
             Assert.NotNull(_albumUsedForTestingPrivate);
-            _albumUsedForTesting = await _client.CreateAlbum("testAlbum123").ConfigureAwait(false);
+            _albumUsedForTesting = (await _client.CreateAlbum("testAlbum123").ConfigureAwait(false)).Value;
             Assert.NotNull(_albumUsedForTesting);
         }
 
@@ -43,7 +44,7 @@ namespace CDN.NET.Tests.Wrapper.Client
         [Test]
         public async Task GetAllAlbums()
         {
-            var resp = (await _client.GetAllAlbums().ConfigureAwait(false)).ToList();
+            var resp = (await _client.GetAllAlbums().ConfigureAwait(false)).Value.ToList();
             Assert.NotNull(resp);
             Assert.IsNotEmpty(resp);
         }
@@ -52,31 +53,36 @@ namespace CDN.NET.Tests.Wrapper.Client
         public async Task GetPrivateAlbum()
         {
             var resp = await _client.GetPrivateAlbum(_albumUsedForTestingPrivate.Id).ConfigureAwait(false);
-            Assert.NotNull(resp);
-            Assert.AreEqual(_albumUsedForTestingPrivate.Id, resp.Id);
+            Assert.IsTrue(resp.HasValue);
+            Assert.NotNull(resp.Value);
+            Assert.AreEqual(_albumUsedForTestingPrivate.Id, resp.Value.Id);
         }
         
         [Test]
         public async Task GetAlbum()
         {
             var resp = await _client.GetAlbum(_albumUsedForTesting.Id).ConfigureAwait(false);
-            Assert.NotNull(resp);
-            Assert.AreEqual(_albumUsedForTesting.Id, resp.Id);
+            Assert.IsTrue(resp.HasValue);
+            Assert.NotNull(resp.Value);
+            Assert.AreEqual(_albumUsedForTesting.Id, resp.Value.Id);
         }
         
         [Test]
         public async Task DeleteAlbum()
         {
-            await _client.DeleteAlbum(_albumToBeDeleted.Id).ConfigureAwait(false);
+            var resp = await _client.DeleteAlbum(_albumToBeDeleted.Id).ConfigureAwait(false);
+            Assert.IsTrue(resp.HasValue);
+            Assert.IsTrue(resp.Value);
         }
 
         [Test]
         public async Task CreateAndThenRemoveAlbum()
         {
             var resp = await _client.CreateAlbum("test3").ConfigureAwait(false);
-            Assert.NotNull(resp);
-            Assert.AreEqual("test3", resp.Name);
-            await _client.DeleteAlbum(resp.Id);
+            Assert.IsTrue(resp.HasValue);
+            Assert.NotNull(resp.Value);
+            Assert.AreEqual("test3", resp.Value.Name);
+            await _client.DeleteAlbum(resp.Value.Id);
         }
     }
 }

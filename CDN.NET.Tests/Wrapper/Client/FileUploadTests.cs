@@ -16,7 +16,8 @@ namespace CDN.NET.Tests.Wrapper.Client
         {
             _client = new CdnClient(Constants.BaseUrl);
             var resp = await _client.Login("daniele", "123456");
-            Assert.IsNotEmpty(resp.Token);
+            Assert.IsTrue(resp.HasValue);
+            Assert.IsNotEmpty(resp.Value.Token);
         }
 
         [OneTimeTearDown]
@@ -30,11 +31,11 @@ namespace CDN.NET.Tests.Wrapper.Client
         {
             string[] paths = GetExampleImages();
             UploadFileInfo[] files = paths.Select(path => new UploadFileInfo(path)).ToArray();
-            var uploadedFiles = (await _client.UploadFiles(files).ConfigureAwait(false)).ToList();
+            var uploadedFiles = (await _client.UploadFiles(files).ConfigureAwait(false)).Value.ToList();
             Assert.IsNotEmpty(uploadedFiles);
-            Assert.AreEqual(paths.Length, files.Length);
+            Assert.AreEqual(paths.Length, uploadedFiles.Count);
             string[] publicIds = uploadedFiles.Select(f => f.PublicId).ToArray();
-            var removedFiles = (await _client.RemoveFiles(publicIds).ConfigureAwait(false)).ToArray();
+            var removedFiles = (await _client.RemoveFiles(publicIds).ConfigureAwait(false)).Value.ToArray();
             Assert.NotNull(removedFiles);
             Assert.AreEqual(paths.Length, removedFiles.Length);
         }
@@ -44,13 +45,13 @@ namespace CDN.NET.Tests.Wrapper.Client
         {
             string[] paths = GetExampleImages();
             UploadFileInfo[] files = paths.Select(path => new UploadFileInfo(path) {IsPublic = false, Name = "testname"}).ToArray();
-            var uploadedFiles = (await _client.UploadFiles(files).ConfigureAwait(false)).ToArray();
+            var uploadedFiles = (await _client.UploadFiles(files).ConfigureAwait(false)).Value.ToArray();
             Assert.IsNotEmpty(uploadedFiles);
             Assert.AreEqual(paths.Length, files.Length);
             Assert.IsFalse(uploadedFiles[0].IsPublic);
             Assert.AreEqual("testname", uploadedFiles[1].Name);
             string[] publicIds = uploadedFiles.Select(f => f.PublicId).ToArray();
-            var removedFiles = (await _client.RemoveFiles(publicIds).ConfigureAwait(false)).ToArray();
+            var removedFiles = (await _client.RemoveFiles(publicIds).ConfigureAwait(false)).Value.ToArray();
             Assert.NotNull(removedFiles);
             Assert.AreEqual(paths.Length, removedFiles.Length);
         }
@@ -59,7 +60,9 @@ namespace CDN.NET.Tests.Wrapper.Client
         public async Task UploadFileNoParametersAndRemove()
         {
             string path = GetExampleImage();
-            var response = await _client.UploadFile(path).ConfigureAwait(false);
+            var responseMaybe = await _client.UploadFile(path).ConfigureAwait(false);
+            Assert.IsTrue(responseMaybe.HasValue);
+            var response = responseMaybe.Value;
             Assert.NotNull(response);
             Assert.IsNotEmpty(response.Url);
             Assert.IsNull(response.AlbumId);
@@ -72,7 +75,9 @@ namespace CDN.NET.Tests.Wrapper.Client
         public async Task UploadFileWithParametersAndRemove()
         {
             string path = GetExampleImage();
-            var response = await _client.UploadFile(path, "testname", false);
+            var responseM = await _client.UploadFile(path, "testname", false);
+            Assert.IsTrue(responseM.HasValue);
+            var response = responseM.Value;
             Assert.NotNull(response);
             Assert.IsNotEmpty(response.Url);
             Assert.IsFalse(response.IsPublic);

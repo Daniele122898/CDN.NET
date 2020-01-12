@@ -9,40 +9,40 @@ namespace CDN.NET.Wrapper.Client
     public partial class CdnClient
     {
         /// <inheritdoc />
-        public async Task<IEnumerable<Album>> GetAllAlbums()
+        public async Task<Maybe<IEnumerable<Album>>> GetAllAlbums()
         {
             return await this.GetAndMapResponse<IEnumerable<Album>>(Endpoints.AlbumGetAll)
                 .ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<Album> GetPrivateAlbum(int id)
+        public async Task<Maybe<Album>> GetPrivateAlbum(int id)
         {
             return await this.GetAndMapResponse<Album>($"{Endpoints.AlbumGetPrivate}/{id.ToString()}")
                 .ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<Album> GetAlbum(int id)
+        public async Task<Maybe<Album>> GetAlbum(int id)
         {
             return await this.GetAndMapResponse<Album>($"{Endpoints.AlbumBase}/{id.ToString()}")
                 .ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task DeleteAlbum(int id)
+        public async Task<Maybe<bool>> DeleteAlbum(int id)
         {
-            await this.GetRawResponseAndEnsureSuccess($"{Endpoints.AlbumBase}/{id.ToString()}", HttpMethods.Delete)
-                .ConfigureAwait(false);
+            return (await this.GetRawResponseAndEnsureSuccess($"{Endpoints.AlbumBase}/{id.ToString()}", HttpMethods.Delete)
+                .ConfigureAwait(false)).ToSuccessMaybe();
         }
 
         /// <inheritdoc />
-        public async Task<Album> CreateAlbum(string name = null, bool isPublic = true)
+        public async Task<Maybe<Album>> CreateAlbum(string name = null, bool isPublic = true)
         {
             return await this.GetAndMapResponse<Album>(
-                    Endpoints.AlbumBase,
-                    HttpMethods.Post,
-                    new {isPublic, name}
+                Endpoints.AlbumBase,
+                HttpMethods.Post,
+                new {isPublic, name}
             ).ConfigureAwait(false);
         }
     }

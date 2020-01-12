@@ -19,8 +19,7 @@ namespace CDN.NET.Wrapper.Client
         /// </summary>
         /// <param name="fileToUpload">File info with either path or stream and additional optional information</param>
         /// <returns>The file upload response with public url and co</returns>
-        /// <exception cref="ArgumentException">Throws if the file has no valid path or file stream</exception>
-        public async Task<FileResponse> UploadFile(UploadFileInfo fileToUpload)
+        public async Task<Maybe<FileResponse>> UploadFile(UploadFileInfo fileToUpload)
         {
             if (fileToUpload.HasPath)
             {
@@ -34,7 +33,7 @@ namespace CDN.NET.Wrapper.Client
                     fileToUpload.AlbumId).ConfigureAwait(false);
             }
 
-            throw new ArgumentException("File has to have a valid stream or path");
+            return Maybe.FromErr<FileResponse>(new ArgumentException("File has to have a valid stream or path"));
         }
 
         /// <summary>
@@ -46,12 +45,12 @@ namespace CDN.NET.Wrapper.Client
         /// <param name="isPublic">If the file should be public or only reachable with YOUR api authentication.</param>
         /// <param name="albumId">The Id of the album it should belong to if any.</param>
         /// <returns>The file upload response with public url and co</returns>
-        /// <exception cref="FileNotFoundException">When the path to the file is invalid</exception>
-        public async Task<FileResponse> UploadFile(string pathToFile, string name = null, bool isPublic = true, int? albumId = null)
+        public async Task<Maybe<FileResponse>> UploadFile(string pathToFile, string name = null, bool isPublic = true, int? albumId = null)
         {
             if (!File.Exists(pathToFile))
             {
-                throw new FileNotFoundException($"Your specified file could not be found: {pathToFile}");
+                return Maybe.FromErr<FileResponse>(
+                    new FileNotFoundException($"Your specified file could not be found: {pathToFile}"));
             }
 
             await using var stream = File.OpenRead(pathToFile);
@@ -67,7 +66,7 @@ namespace CDN.NET.Wrapper.Client
         /// <param name="isPublic">If the file should be public or only reachable with YOUR api authentication.</param>
         /// <param name="albumId">The Id of the album it should belong to if any.</param>
         /// <returns>The file upload response with public url and co</returns>
-        public async Task<FileResponse> UploadFile(FileStream fileStream, string name = null, bool isPublic = true, int? albumId = null)
+        public async Task<Maybe<FileResponse>> UploadFile(FileStream fileStream, string name = null, bool isPublic = true, int? albumId = null)
         {
             using var form = new MultipartFormDataContent();
             using var streamContent = new StreamContent(fileStream);
@@ -95,7 +94,7 @@ namespace CDN.NET.Wrapper.Client
         /// <param name="filesToUpload">File infos with path or stream. ATTENTION: The album Id within the file infos DO NOT matter!</param>
         /// <param name="albumId">Id of album to add these files to if any.</param>
         /// <returns>The file upload response with public url and co</returns>
-        public async Task<IEnumerable<FileResponse>> UploadFiles(UploadFileInfo[] filesToUpload, int? albumId = null)
+        public async Task<Maybe<IEnumerable<FileResponse>>> UploadFiles(UploadFileInfo[] filesToUpload, int? albumId = null)
         {
             using var form = new MultipartFormDataContent();
             List<MultiFileInfoDto> infoList = new List<MultiFileInfoDto>();
