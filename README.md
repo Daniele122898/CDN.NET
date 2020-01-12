@@ -44,3 +44,13 @@ net stop mariadb
 ```
 If you want to disable the auto start of the mariadb windows service do the following:
 Windows + R `services.msc` and set MariaDB to start manually
+
+### Linux Troubleshooting
+
+#### Can't run Wyam
+
+Try this if wyam cant be found
+`export PATH="$PATH:/home/argonaut/.dotnet/tools"`
+
+Try this if there's an error about libhostfxr.so
+`export DOTNET_ROOT="/opt/dotnet"`

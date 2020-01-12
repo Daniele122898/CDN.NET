@@ -6,3 +6,4 @@ obj
 wwwroot
 fileStorage/
 */appsettings*.json
+doc/
