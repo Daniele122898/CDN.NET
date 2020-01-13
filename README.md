@@ -1,6 +1,24 @@
-# CDN.NET, simple yet powerful file hosting service
+<hr/>
+<h1 align="center">
+	CDN.NET
+</h1>
+<h2 align="center">
+Simple yet powerful file hosting service
+</h2>
+<hr/>
+<p align="center">
+    This is the backend portion including the API wrapper
+    <br>
+	Join this Discord Server for support (It's originally for another app but im generally there).
+	<br>
+	<br>
+    <a href="https://discord.gg/Pah4yj5">
+        <img src="https://discordapp.com/api/guilds/281589163659362305/widget.png?style=banner2">
+    </a>
+</p>
+<hr/>
 
-This is the backend instance and API wrapper for CDN.NET.
+[![NuGet](https://img.shields.io/nuget/vpre/CDN.NET.Wrapper.svg?maxAge=2592000?style=flat)](https://www.nuget.org/packages/CDN.NET.Wrapper)
 
 ## What is CDN.NET
 
@@ -45,9 +63,9 @@ net stop mariadb
 If you want to disable the auto start of the mariadb windows service do the following:
 Windows + R `services.msc` and set MariaDB to start manually
 
-### Linux Troubleshooting
+## Linux Troubleshooting
 
-#### Can't run Wyam
+### Can't run Wyam
 
 Try this if wyam cant be found
 `export PATH="$PATH:/home/argonaut/.dotnet/tools"`
