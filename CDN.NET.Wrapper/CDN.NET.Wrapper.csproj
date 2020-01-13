@@ -6,6 +6,10 @@
         <Version>1.0.0-beta.2</Version>
         <Authors>daniele_serenity</Authors>
         <Company>Argonaut Developments</Company>
+        <PackageProjectUrl>https://github.com/Daniele122898/CDN.NET</PackageProjectUrl>
+        <Description>API Wrapper for CDN.NET file hosting service</Description>
+        <Copyright>Copyright 2020 (c) by Serenity. All rights reserved.</Copyright>
+        <PackageTags>CDN.NET Wrapper API API-Wrapper FileHosting</PackageTags>
     </PropertyGroup>
 
     <ItemGroup>
