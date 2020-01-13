@@ -7,3 +7,4 @@ wwwroot
 fileStorage/
 */appsettings*.json
 doc/
+**/publish*.sh
