@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using ArgonautCore.Maybe;
 using CDN.NET.Wrapper.Dtos;
 using CDN.NET.Wrapper.Enums;
 using CDN.NET.Wrapper.Models;
-using CDN.NET.Wrapper.Utils;
 
 namespace CDN.NET.Wrapper.Client
 {

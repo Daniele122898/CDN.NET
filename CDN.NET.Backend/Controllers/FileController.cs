@@ -9,7 +9,6 @@ using CDN.NET.Backend.Repositories.Interfaces;
 using CDN.NET.Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.FileSystemGlobbing.Internal.PathSegments;
 
 namespace CDN.NET.Backend.Controllers
 {
