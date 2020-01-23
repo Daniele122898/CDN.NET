@@ -2,7 +2,8 @@
   "AppSettings": {
     "Token": "432v5g34f53425324hbv56g5",
     "BaseUrl": "http://localhost:5000",
-    "Private": false
+    "Private": false,
+    "DaysUntilTokenExpiration": 3
   },
   "UploadSettings": {
     "MaxSize": 50,
