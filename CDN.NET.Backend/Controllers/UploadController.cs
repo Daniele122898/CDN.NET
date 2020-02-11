@@ -135,13 +135,17 @@ namespace CDN.NET.Backend.Controllers
                     fileStreams.Add(fileData);
                     // create files for database
                     bool isPublic = true;
-                    string name = fileId;
+                    string filename = Path.GetFileNameWithoutExtension(file.FileName);
+                    string name = filename;
                     if (infoList != null && infoList.Count != 0)
                     {
                         isPublic = infoList[index].IsPublic;
-                        name = infoList[index].Name ?? fileId;
+                        name = infoList[index].Name ?? filename;
                     }
 
+                    if (string.IsNullOrWhiteSpace(name))
+                        name = fileId;
+                    
                     var uFile = new UFile(fileId, isPublic, extension, file.ContentType,
                         userFromRepo.Id, name);
                     if (album != null)
@@ -256,8 +260,9 @@ namespace CDN.NET.Backend.Controllers
                 await using FileStream fs = new FileStream(path, FileMode.Create);
                 // let the copy task run but let's not wait for it as memory is slow
                 copyTask = fileReceiveDto.File.CopyToAsync(fs);
+                string filename = string.IsNullOrWhiteSpace(fileReceiveDto.Name) ? Path.GetFileNameWithoutExtension(fileReceiveDto.File.FileName) : fileReceiveDto.Name;
                 var uFile = new UFile(fileId, fileReceiveDto.IsPublic,extension, 
-                    fileReceiveDto.File.ContentType, userFromRepo.Id ,fileReceiveDto.Name);
+                    fileReceiveDto.File.ContentType, userFromRepo.Id ,filename);
                 // Add to album if album Id is given            
                 if (fileReceiveDto.AlbumId.HasValue)
                 {
