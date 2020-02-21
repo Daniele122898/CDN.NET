@@ -27,7 +27,12 @@ CDN.NET is an easy to setup and use file storage and hosting system. Thanks to i
 ## CDN.NET is still under heavy construction
 It is supposed to be the backbone of a future startup of mine and all other public hosting needs i may need in the future like Sora's own images. Thus this project will be heavily optimized for thousands of users and in the further future should be an actual CDN with multiple nodes.
 
-## Setup for self hosting
+## Frontend
+![Frontend](https://i.imgur.com/aF6284F.png)
+[You can find the Frontend here](https://github.com/Daniele122898/CDN-NET-frontend)
+
+## Setup backend for self hosting
+
 ## Config
 Checkout the example appsettings.json.example file to see what you will need to configure yourself. 
 

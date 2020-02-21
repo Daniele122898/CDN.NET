@@ -129,7 +129,7 @@ namespace CDN.NET.Backend.Controllers
             var tokenDescriptor = new SecurityTokenDescriptor()
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddDays(1),
+                Expires = DateTime.UtcNow.AddDays(_appSettings.Value.DaysUntilTokenExpiration),
                 NotBefore = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(1)),
                 SigningCredentials = creds,
                 Issuer = Constants.TOKEN_ISSUER

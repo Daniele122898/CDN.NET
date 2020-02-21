@@ -34,10 +34,26 @@ namespace CDN.NET.Backend.Controllers
             _utilsService = utilsService;
             _fileRepo = fileRepo;
         }
+        
+        /// <summary>
+        /// Get all albums of a user without the files
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("getAllSparse")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<AlbumsToReturnSparseDto>>> GetAllAlbumsSparse()
+        {
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            var albums = await _albumRepo.GetAllAlbumsFromUser(userId);
+
+            var albumsToReturn = _mapper.Map<IEnumerable<AlbumsToReturnSparseDto>>(albums);
+            return Ok(albumsToReturn);
+        }
 
         [HttpGet("getAll")]
         [Authorize]
-        public async Task<ActionResult<AlbumToReturnDto>> GetAllAlbums()
+        public async Task<ActionResult<IEnumerable<AlbumToReturnDto>>> GetAllAlbums()
         {
             int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 

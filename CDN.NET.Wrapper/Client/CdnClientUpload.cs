@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
+using ArgonautCore.Maybe;
 using CDN.NET.Wrapper.Dtos;
 using CDN.NET.Wrapper.Enums;
 using CDN.NET.Wrapper.Models;

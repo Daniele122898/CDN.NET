@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using ArgonautCore.Maybe;
 using CDN.NET.Wrapper.Enums;
 using CDN.NET.Wrapper.Utils;
 

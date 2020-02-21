@@ -20,6 +20,7 @@ namespace CDN.NET.Backend.Helpers
         private void FileMaps()
         {
             CreateMap<UFile, FileDeleteReturnDto>();
+            CreateMap<Album, AlbumsToReturnSparseDto>();
             CreateMap<Album, AlbumToReturnDto>()
                 .ForMember(m => m.Files,
                     opt => opt.MapFrom(src => src.UFiles));
