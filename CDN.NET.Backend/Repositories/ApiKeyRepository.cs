@@ -50,6 +50,16 @@ namespace CDN.NET.Backend.Repositories
             _context.ApiKeys.Remove(key);
         }
 
+        public async Task RemoveApiKeyByUserId(int userId)
+        {
+            var key = await _context.ApiKeys.SingleOrDefaultAsync(x => x.UserId == userId);
+            if (key == null)
+                return;
+
+            _context.ApiKeys.Remove(key);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<bool> SaveAll()
         {
             return await _context.SaveChangesAsync() > 0;

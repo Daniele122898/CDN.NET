@@ -41,6 +41,12 @@ namespace CDN.NET.Backend.Data
                 .HasForeignKey(k => k.AlbumId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<Album>()
+                .HasOne(u => u.Owner)
+                .WithMany(a => a.Albums)
+                .HasForeignKey(k => k.OwnerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             /*
             // Like
             builder.Entity<Like>()

@@ -13,9 +13,12 @@ namespace CDN.NET.Backend.Models
         public byte[] PasswordHash { get; set; }
         [Required]
         public byte[] PasswordSalt { get; set; }
+
+        [Required] public bool IsAdmin { get; set; } = false;
         
         public virtual ApiKey ApiKey { get; set; }
         public virtual ICollection<UFile> Files { get; set; }
+        public virtual ICollection<Album> Albums { get; set; }
         
     }
 }

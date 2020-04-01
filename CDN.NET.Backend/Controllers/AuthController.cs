@@ -89,16 +89,22 @@ namespace CDN.NET.Backend.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<UserDetailDto>> Register(UserForRegisterDto userForRegisterDto)
         {
+            bool isFirstUser = false;
             if (_appSettings.Value.Private)
             {
-                return StatusCode(StatusCodes.Status403Forbidden,
-                    new {message = "CDN is in private mode, registration is not allowed"});
+                // See if he is the first user
+                isFirstUser = await _authRepo.IsFirstUser();
+                if (!isFirstUser)
+                {
+                    return StatusCode(StatusCodes.Status403Forbidden,
+                        new {message = "CDN is in private mode, registration is not allowed"});
+                }
             }
             userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
             if (await _authRepo.UserExistsByUsername(userForRegisterDto.Username))
                 return BadRequest("Username already exists");
 
-            var createdUser = await _authRepo.Register(userForRegisterDto.Username, userForRegisterDto.Password);
+            var createdUser = await _authRepo.Register(userForRegisterDto.Username, userForRegisterDto.Password, isFirstUser);
             var userToReturn = _mapper.Map<UserDetailDto>(createdUser);
             // TODO change to created at route
             //return CreatedAtRoute("GetUser", new {controller = "Users", id = createdUser.Id}, userToReturn);

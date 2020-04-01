@@ -9,6 +9,7 @@ namespace CDN.NET.Backend.Repositories.Interfaces
         Task<bool> IsActiveApiKey(string key);
         Task<ApiKey> GetKey(string key);
         void RemoveApiKey(ApiKey key);
+        Task RemoveApiKeyByUserId(int userId);
         Task<bool> SaveAll();
     }
 }

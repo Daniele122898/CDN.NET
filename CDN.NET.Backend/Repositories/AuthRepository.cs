@@ -14,9 +14,13 @@ namespace CDN.NET.Backend.Repositories
         {
             _context = context;
         }
-        
-        
-        public async Task<User> Register(User user, string password)
+
+        public async Task<bool> IsFirstUser()
+        {
+            return await _context.Users.CountAsync() == 0;
+        }
+
+        public async Task<User> Register(User user, string password, bool isAdmin = false)
         {
             CreatePasswordHash(password, out var passwordHash, out var passwordSalt);
             user.PasswordHash = passwordHash;
@@ -28,10 +32,10 @@ namespace CDN.NET.Backend.Repositories
             return user;
         }
 
-        public async Task<User> Register(string username, string password)
+        public async Task<User> Register(string username, string password, bool isAdmin = false)
         {
             CreatePasswordHash(password, out var passwordHash, out var passwordSalt);
-            var user = new User {Username = username, PasswordHash = passwordHash, PasswordSalt = passwordSalt};
+            var user = new User {Username = username, PasswordHash = passwordHash, PasswordSalt = passwordSalt, IsAdmin = isAdmin};
 
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
