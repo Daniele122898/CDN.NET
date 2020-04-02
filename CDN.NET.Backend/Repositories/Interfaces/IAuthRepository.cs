@@ -5,7 +5,7 @@ namespace CDN.NET.Backend.Repositories.Interfaces
 {
     public interface IAuthRepository
     {
-        Task<bool> IsFirstUser();
+        Task<bool>  IsFirstUser();
         Task<User> Register(User user, string password, bool isAdmin = false);
         Task<User> Register(string username, string password, bool isAdmin = false);
         Task<User> Login(string username, string password);
