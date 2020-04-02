@@ -37,8 +37,7 @@ namespace CDN.NET.Backend.Data
             builder.Entity<Album>()
                 .HasMany(a => a.UFiles)
                 .WithOne(f => f.Album)
-                .HasForeignKey(k => k.AlbumId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(k => k.AlbumId);
 
             builder.Entity<Album>()
                 .HasOne(u => u.Owner)

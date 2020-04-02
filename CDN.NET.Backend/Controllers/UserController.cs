@@ -64,13 +64,7 @@ namespace CDN.NET.Backend.Controllers
             {
                 return NotFound();
             }
-            // Remove albums
-            foreach (var album in user.Albums)
-            {
-                _albumRepo.Delete(album);
-            }
-            await _albumRepo.SaveAll();
-
+            
             // Remove all files
             foreach (var file in user.Files)
             {
@@ -82,6 +76,13 @@ namespace CDN.NET.Backend.Controllers
                 _fileRepo.Delete(file);
             }
             await _fileRepo.SaveAll();
+            
+            // Remove albums
+            foreach (var album in user.Albums)
+            {
+                _albumRepo.Delete(album);
+            }
+            await _albumRepo.SaveAll();
             
             // Remove ApiKey
             await _apiKeyRepo.RemoveApiKeyByUserId(user.Id);
