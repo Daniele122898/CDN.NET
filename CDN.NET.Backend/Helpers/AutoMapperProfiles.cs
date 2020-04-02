@@ -4,6 +4,7 @@ using CDN.NET.Backend.Dtos.AlbumDtos;
 using CDN.NET.Backend.Dtos.AuthDtos;
 using CDN.NET.Backend.Dtos.FileDtos;
 using CDN.NET.Backend.Dtos.UploadDtos;
+using CDN.NET.Backend.Dtos.UserDtos;
 using CDN.NET.Backend.Models;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,8 +14,18 @@ namespace CDN.NET.Backend.Helpers
     {
         public AutoMapperProfiles()
         {
-            RegistrationMaps();
-            FileMaps();
+            this.RegistrationMaps();
+            this.FileMaps();
+            this.UserMaps();
+        }
+
+        private void UserMaps()
+        {
+            CreateMap<User, UserAdminReturnDto>()
+                .ForMember(m => m.Files,
+                    opt => opt.MapFrom(src => src.Files))
+                .ForMember(m => m.Albums,
+                    opt => opt.MapFrom(src => src.Albums));
         }
 
         private void FileMaps()

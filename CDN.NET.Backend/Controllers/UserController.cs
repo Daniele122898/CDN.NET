@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
-using CDN.NET.Backend.Dtos.AuthDtos;
+using CDN.NET.Backend.Dtos.UserDtos;
 using CDN.NET.Backend.Helpers;
 using CDN.NET.Backend.Repositories.Interfaces;
 using CDN.NET.Backend.Services.Interfaces;
@@ -36,7 +36,7 @@ namespace CDN.NET.Backend.Controllers
         }
 
         [HttpGet("users")]
-        public async Task<ActionResult<List<UserDetailDto>>> GetAllUsers()
+        public async Task<ActionResult<List<UserAdminReturnDto>>> GetAllUsers()
         {
             int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             if (await _userRepo.IsAdmin(userId) == false)
@@ -45,7 +45,7 @@ namespace CDN.NET.Backend.Controllers
             }
             //var user = _mapper.Map<UserDetailDto>(userFromRepo);
             var users = await _userRepo.GetAllUser();
-            var usersToReturn = _mapper.Map<List<UserDetailDto>>(users);
+            var usersToReturn = _mapper.Map<List<UserAdminReturnDto>>(users);
 
             return usersToReturn;
         }
