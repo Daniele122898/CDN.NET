@@ -6,12 +6,14 @@ using CDN.NET.Backend.Dtos.AuthDtos;
 using CDN.NET.Backend.Helpers;
 using CDN.NET.Backend.Repositories.Interfaces;
 using CDN.NET.Backend.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CDN.NET.Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _userRepo;
