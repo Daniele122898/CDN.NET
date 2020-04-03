@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using CDN.NET.Backend.Dtos.AuthDtos;
 using CDN.NET.Backend.Dtos.UserDtos;
 using CDN.NET.Backend.Helpers;
 using CDN.NET.Backend.Repositories.Interfaces;
@@ -48,6 +49,29 @@ namespace CDN.NET.Backend.Controllers
             var usersToReturn = _mapper.Map<List<UserAdminReturnDto>>(users);
 
             return usersToReturn;
+        }
+
+        [HttpPut("user/{userId}")]
+        public async Task<ActionResult<UserDetailDto>> AdminUpdateUser(int userId, UserAdminEditDto editInfo)
+        {
+            int reqUserId = this.GetRequestUserId();
+            if (await _userRepo.IsAdmin(reqUserId) == false)
+            {
+                return Unauthorized();
+            }
+            
+            // Check if User exists
+            var user = await _userRepo.GetUserById(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            
+            // Update user info
+            var userToRet = await _userRepo.UpdateUserInfo(user, editInfo);
+            var ret = _mapper.Map<UserDetailDto>(userToRet);
+
+            return Ok(ret);
         }
 
         [HttpDelete("user/{userId}")]

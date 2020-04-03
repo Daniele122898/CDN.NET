@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CDN.NET.Backend.Data;
+using CDN.NET.Backend.Dtos.UserDtos;
 using CDN.NET.Backend.Models;
 using CDN.NET.Backend.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -54,6 +55,22 @@ namespace CDN.NET.Backend.Repositories
         public async Task<User> GetUserByUsername(string username)
         {
             return await _context.Users.FirstOrDefaultAsync(x => x.Username.ToLower() == username.ToLower());
+        }
+
+        public async Task<User> UpdateUserInfo(User user, UserAdminEditDto info)
+        {
+            user.Username = info.Username ?? user.Username;
+            user.IsAdmin = info.IsAdmin ?? user.IsAdmin;
+            
+            if (!string.IsNullOrWhiteSpace(info.Password))
+            {
+                AuthRepository.CreatePasswordHash(info.Password, out var passwordHash, out var passwordSalt);
+                user.PasswordHash = passwordHash;
+                user.PasswordSalt = passwordSalt;
+            }
+
+            await _context.SaveChangesAsync();
+            return user;
         }
 
         public async Task<List<User>> GetAllUser()
