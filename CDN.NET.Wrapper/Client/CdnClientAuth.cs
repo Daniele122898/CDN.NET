@@ -4,7 +4,7 @@ using System.Net.Http.Headers;
 using System.Security.Authentication;
 using System.Threading.Tasks;
 using ArgonautCore.Maybe;
-using CDN.NET.Wrapper.Dtos;
+using CDN.NET.Wrapper.Dtos.User;
 using CDN.NET.Wrapper.Enums;
 using CDN.NET.Wrapper.Models;
 using CDN.NET.Wrapper.Utils;

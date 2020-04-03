@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using CDN.NET.Wrapper.Client;
-using CDN.NET.Wrapper.Dtos;
+using CDN.NET.Wrapper.Dtos.File;
 using CDN.NET.Wrapper.Models;
 using NUnit.Framework;
 

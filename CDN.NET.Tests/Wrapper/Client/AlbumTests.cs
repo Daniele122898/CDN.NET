@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using CDN.NET.Wrapper.Client;
-using CDN.NET.Wrapper.Dtos;
+using CDN.NET.Wrapper.Dtos.Album;
 using NUnit.Framework;
 
 namespace CDN.NET.Tests.Wrapper.Client
