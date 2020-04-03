@@ -23,10 +23,11 @@ namespace CDN.NET.Backend.Controllers
         private readonly IUtilsService _utilsService;
         private readonly IAlbumRepository _albumRepo;
         private readonly IApiKeyRepository _apiKeyRepo;
+        private readonly IAuthRepository _authRepo;
 
 
         public UserController(IUserRepository userRepo, IFileRepository fileRepo, IMapper mapper, 
-            IUtilsService utilsService, IAlbumRepository albumRepo, IApiKeyRepository apiKeyRepo)
+            IUtilsService utilsService, IAlbumRepository albumRepo, IApiKeyRepository apiKeyRepo, IAuthRepository authRepo)
         {
             _userRepo = userRepo;
             _fileRepo = fileRepo;
@@ -34,6 +35,7 @@ namespace CDN.NET.Backend.Controllers
             _utilsService = utilsService;
             _albumRepo = albumRepo;
             _apiKeyRepo = apiKeyRepo;
+            _authRepo = authRepo;
         }
 
         [HttpGet("users")]
@@ -65,6 +67,15 @@ namespace CDN.NET.Backend.Controllers
             if (user == null)
             {
                 return NotFound();
+            }
+            
+            // Check if username is unique if one is passed
+            if (!string.IsNullOrWhiteSpace(editInfo.Username))
+            {
+                if (await _authRepo.UserExistsByUsername(editInfo.Username))
+                {
+                    return BadRequest("Username already exists");
+                }
             }
             
             // Update user info
