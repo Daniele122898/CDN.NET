@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using ArgonautCore.Maybe;
 using CDN.NET.Wrapper.Dtos.User;
+using CDN.NET.Wrapper.Enums;
 using CDN.NET.Wrapper.Models;
 using CDN.NET.Wrapper.Utils;
 
@@ -17,9 +18,11 @@ namespace CDN.NET.Wrapper.Client
         }
 
         /// <inheritdoc />
-        public Task<Maybe<bool>> AdminRemoveUser(int userId)
+        public async Task<Maybe<bool>> AdminRemoveUser(int userId)
         {
-            throw new System.NotImplementedException();
+            return (await this.GetRawResponseAndEnsureSuccess($"{Endpoints.AdminDeleteUser}/{userId.ToString()}",
+                    HttpMethods.Delete)
+                .ConfigureAwait(false)).ToSuccessMaybe();
         }
 
         /// <inheritdoc />
