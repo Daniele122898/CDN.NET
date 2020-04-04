@@ -53,7 +53,7 @@ namespace CDN.NET.Backend.Controllers
             return usersToReturn;
         }
 
-        [HttpPut("user/{userId}")]
+        [HttpPut("{userId}")]
         public async Task<ActionResult<UserDetailDto>> AdminUpdateUser(int userId, UserAdminEditDto editInfo)
         {
             int reqUserId = this.GetRequestUserId();
@@ -85,7 +85,7 @@ namespace CDN.NET.Backend.Controllers
             return Ok(ret);
         }
 
-        [HttpDelete("user/{userId}")]
+        [HttpDelete("{userId}")]
         public async Task<IActionResult> AdminDeleteUser(int userId)
         {
             int reqUserId = this.GetRequestUserId();
