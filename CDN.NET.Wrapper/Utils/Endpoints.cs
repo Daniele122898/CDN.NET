@@ -24,5 +24,10 @@ namespace CDN.NET.Wrapper.Utils
         public static string AlbumGetPrivate = "api/album/private";
         public static string AlbumBase = "api/album";
         
+        // Admin Endpoints
+        public static string AdminGetAllUsers = "api/user/users";
+        public static string AdminUpdateUser = "api/user";
+        public static string AdminDeleteUser = "api/user";
+
     }
 }

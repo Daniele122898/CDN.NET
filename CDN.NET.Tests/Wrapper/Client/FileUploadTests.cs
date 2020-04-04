@@ -15,7 +15,7 @@ namespace CDN.NET.Tests.Wrapper.Client
         public async Task CreateAndAuthenticate()
         {
             _client = new CdnClient(Constants.BaseUrl);
-            var resp = await _client.Login("daniele", "123456");
+            var resp = await _client.Login("admin", "password");
             Assert.IsTrue(resp.HasValue);
             Assert.IsNotEmpty(resp.Value.Token);
         }
@@ -67,7 +67,6 @@ namespace CDN.NET.Tests.Wrapper.Client
             Assert.IsNotEmpty(response.Url);
             Assert.IsNull(response.AlbumId);
             Assert.IsTrue(response.IsPublic);
-            Assert.AreEqual(response.PublicId, response.Name);
             await _client.RemoveFile(response.PublicId);
         }
 

@@ -3,15 +3,17 @@ using System.Threading.Tasks;
 using ArgonautCore.Maybe;
 using CDN.NET.Wrapper.Dtos.User;
 using CDN.NET.Wrapper.Models;
+using CDN.NET.Wrapper.Utils;
 
 namespace CDN.NET.Wrapper.Client
 {
     public partial class CdnClient 
     {
         /// <inheritdoc />
-        public Task<Maybe<IEnumerable<AdminUserInfoDto>>> AdminGetAllUsers()
+        public async Task<Maybe<IEnumerable<AdminUserInfoDto>>> AdminGetAllUsers()
         {
-            throw new System.NotImplementedException();
+            return await this.GetAndMapResponse<IEnumerable<AdminUserInfoDto>>(Endpoints.AdminGetAllUsers)
+                .ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -21,7 +23,7 @@ namespace CDN.NET.Wrapper.Client
         }
 
         /// <inheritdoc />
-        public Task<Maybe<UserInfoDto>> AdminUpdateUser(int userId, UserUpdateInfo updateInfo)
+        public async Task<Maybe<UserInfoDto>> AdminUpdateUser(int userId, UserUpdateInfo updateInfo)
         {
             throw new System.NotImplementedException();
         }

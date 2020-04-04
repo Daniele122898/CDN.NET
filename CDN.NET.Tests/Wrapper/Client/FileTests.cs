@@ -18,7 +18,7 @@ namespace CDN.NET.Tests.Wrapper.Client
         public async Task CreateAndAuthenticate()
         {
             _client = new CdnClient(Constants.BaseUrl);
-            var resp = await _client.Login("daniele", "123456");
+            var resp = await _client.Login("admin", "password");
             Assert.IsTrue(resp.HasValue);
             Assert.IsNotEmpty(resp.Value.Token);
 
@@ -47,7 +47,7 @@ namespace CDN.NET.Tests.Wrapper.Client
         {
             var getallFiles = (await _client.GetAllFiles().ConfigureAwait(false)).Value.ToList();
             Assert.IsNotEmpty(getallFiles);
-            Assert.AreEqual(_uploadedFiles.Count, getallFiles.Count);
+            Assert.GreaterOrEqual(getallFiles.Count, _uploadedFiles.Count);
         }
 
         [Test]
