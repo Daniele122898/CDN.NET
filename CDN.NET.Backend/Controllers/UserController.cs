@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -69,8 +70,9 @@ namespace CDN.NET.Backend.Controllers
                 return NotFound();
             }
             
-            // Check if username is unique if one is passed
-            if (!string.IsNullOrWhiteSpace(editInfo.Username))
+            // Check if username is unique if one is passed 
+            // ONLY if its not the same as we already had
+            if (!string.IsNullOrWhiteSpace(editInfo.Username) && !user.Username.Equals(editInfo.Username, StringComparison.OrdinalIgnoreCase))
             {
                 if (await _authRepo.UserExistsByUsername(editInfo.Username))
                 {

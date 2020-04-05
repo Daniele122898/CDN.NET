@@ -1,4 +1,6 @@
-﻿namespace CDN.NET.Wrapper.Models
+﻿using System.Text.Json.Serialization;
+
+namespace CDN.NET.Wrapper.Models
 {
     public class UserUpdateInfo
     {

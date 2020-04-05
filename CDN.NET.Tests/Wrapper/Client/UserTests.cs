@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using CDN.NET.Wrapper.Client;
 using CDN.NET.Wrapper.Models;
@@ -67,6 +68,44 @@ namespace CDN.NET.Tests.Wrapper.Client
             Assert.False(succ.HasValue);
             Assert.True(succ.HasError);
             Assert.IsTrue(succ.Error.Message.Contains("404"));
+        }
+
+        [Test]
+        public async Task AdminUpdateUserWithAllPropertiesNull()
+        {
+            UserUpdateInfo info = new UserUpdateInfo();
+            var ret = await _client.AdminUpdateUser(_userToRename.Id, info);
+            Assert.IsTrue(ret.HasError);
+            Assert.IsFalse(ret.HasValue);
+            Assert.IsTrue(ret.Error is ArgumentNullException);
+        }
+        
+        [Test]
+        public async Task AdminUpdateUserUsername()
+        {
+            UserUpdateInfo info = new UserUpdateInfo()
+            {
+                Username = "RENAMED"
+            };
+            var ret = await _client.AdminUpdateUser(_userToRename.Id, info);
+            Assert.IsFalse(ret.HasError);
+            Assert.IsTrue(ret.HasValue);
+            Assert.AreEqual("RENAMED", ret.Value.Username);
+        }
+        
+        [Test]
+        public async Task AdminUpdateUserUsernameAndAdmin()
+        {
+            UserUpdateInfo info = new UserUpdateInfo()
+            {
+                Username = "RENAMED",
+                IsAdmin = true
+            };
+            var ret = await _client.AdminUpdateUser(_userToRename.Id, info);
+            Assert.IsFalse(ret.HasError);
+            Assert.IsTrue(ret.HasValue);
+            Assert.AreEqual("RENAMED", ret.Value.Username);
+            Assert.IsTrue(ret.Value.IsAdmin);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ArgonautCore.Maybe;
 using CDN.NET.Wrapper.Dtos.User;
@@ -28,7 +29,16 @@ namespace CDN.NET.Wrapper.Client
         /// <inheritdoc />
         public async Task<Maybe<UserInfoDto>> AdminUpdateUser(int userId, UserUpdateInfo updateInfo)
         {
-            throw new System.NotImplementedException();
+            if (!updateInfo.HasAtLeastOneProperty())
+            {
+                // All of the properties are null
+                var ex = new ArgumentNullException(nameof(updateInfo), "Update info must have at LEAST one non null property");
+                return Maybe.FromErr<UserInfoDto>(ex);
+            }
+            
+            // Otherwise send the request
+            return await this.GetAndMapResponse<UserInfoDto>($"{Endpoints.AdminUpdateUser}/{userId.ToString()}", HttpMethods.Put, updateInfo)
+                .ConfigureAwait(false);
         }
     }
 }

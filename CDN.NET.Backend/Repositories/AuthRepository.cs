@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using CDN.NET.Backend.Data;
 using CDN.NET.Backend.Models;
@@ -63,7 +64,7 @@ namespace CDN.NET.Backend.Repositories
 
         public async Task<bool> UserExistsByUsername(string username)
         {
-            return await _context.Users.AnyAsync(x => x.Username == username);
+            return await _context.Users.AnyAsync(x => x.Username.Equals(username, StringComparison.CurrentCultureIgnoreCase));
         }
 
         public async Task<bool> UserExistsById(int id)

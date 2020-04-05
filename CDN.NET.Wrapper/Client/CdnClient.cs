@@ -136,6 +136,7 @@ namespace CDN.NET.Wrapper.Client
                     response = await _client.GetAsync(endpoint).ConfigureAwait(false);
                     break;
                 case HttpMethods.Post:
+                case HttpMethods.Put:
                     HttpContent content;
                     if (castPayloadWithoutJsonParsing)
                     {
@@ -147,7 +148,14 @@ namespace CDN.NET.Wrapper.Client
                         content = new StringContent(json, Encoding.UTF8, "application/json");
                     }
 
-                    response = await _client.PostAsync(endpoint, content).ConfigureAwait(false);
+                    if (httpMethod == HttpMethods.Put)
+                    {
+                        response = await _client.PutAsync(endpoint, content).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        response = await _client.PostAsync(endpoint, content).ConfigureAwait(false);
+                    }
                     break;
                 case HttpMethods.Delete:
                     if (payload == null)
