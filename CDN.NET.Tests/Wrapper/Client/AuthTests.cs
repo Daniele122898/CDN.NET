@@ -19,7 +19,7 @@ namespace CDN.NET.Tests.Wrapper.Client
         public async Task GetApiKeyAndTestAuthentication()
         {
             using var client = new CdnClient(Constants.BaseUrl);
-            await client.Login("daniele", "123456");
+            await client.Login("admin", "password");
             var tokenMaybe = await client.GetApiKey();
             Assert.IsTrue(tokenMaybe.HasValue);
             Assert.IsNotEmpty(tokenMaybe.Value);
@@ -32,7 +32,7 @@ namespace CDN.NET.Tests.Wrapper.Client
         public async Task TestRemoveApiKey()
         {
             using var client = new CdnClient(Constants.BaseUrl);
-            await client.Login("daniele", "123456");
+            await client.Login("admin", "password");
             var tokenMaybe = await client.GetApiKey();
             Assert.IsTrue(tokenMaybe.HasValue);
             Assert.IsNotEmpty(tokenMaybe.Value);
@@ -44,7 +44,7 @@ namespace CDN.NET.Tests.Wrapper.Client
         public async Task LoginAuthTest()
         {
             using var client = new CdnClient(Constants.BaseUrl);
-            await client.Login("daniele", "123456");
+            await client.Login("admin", "password");
             (bool success, string message) = await client.TestAuthentication();
             Assert.IsTrue(success);
             Assert.IsNotEmpty(message);
@@ -72,9 +72,9 @@ namespace CDN.NET.Tests.Wrapper.Client
         public async Task LoginTest()
         {
             using var client = new CdnClient(Constants.BaseUrl);
-            var loginDto = await client.Login("daniele", "123456");
+            var loginDto = await client.Login("admin", "password");
             Assert.IsTrue(loginDto.HasValue);
-            Assert.AreEqual("daniele", loginDto.Value.User.Username);
+            Assert.AreEqual("admin", loginDto.Value.User.Username);
             Assert.IsNotNull(loginDto.Value.Token);
             Assert.IsNotEmpty(loginDto.Value.Token);
         }

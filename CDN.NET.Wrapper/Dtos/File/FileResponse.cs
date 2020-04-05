@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CDN.NET.Wrapper.Dtos
+namespace CDN.NET.Wrapper.Dtos.File
 {
     public class FileResponse
     {

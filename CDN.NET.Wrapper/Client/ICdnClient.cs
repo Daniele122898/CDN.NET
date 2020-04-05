@@ -4,7 +4,9 @@ using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using ArgonautCore.Maybe;
-using CDN.NET.Wrapper.Dtos;
+using CDN.NET.Wrapper.Dtos.Album;
+using CDN.NET.Wrapper.Dtos.File;
+using CDN.NET.Wrapper.Dtos.User;
 using CDN.NET.Wrapper.Enums;
 using CDN.NET.Wrapper.Models;
 
@@ -123,6 +125,12 @@ namespace CDN.NET.Wrapper.Client
         /// </summary>
         /// <returns>List of all your albums</returns>
         public Task<Maybe<IEnumerable<Album>>> GetAllAlbums();
+
+        /// <summary>
+        /// Get all of your albums without the files attached to it
+        /// </summary>
+        /// <returns>List of all your albums without the files attached to it</returns>
+        public Task<Maybe<IEnumerable<AlbumsSparse>>> GetAllAlbumsSparse();
         
         /// <summary>
         /// Get a private album of yours and all it's files (info) 
@@ -166,5 +174,28 @@ namespace CDN.NET.Wrapper.Client
         /// <param name="publicId">Public Id of image</param>
         /// <returns>The file info</returns>
         public Task<Maybe<FileResponse>> GetPrivateFileInfo(string publicId);
+
+        /// <summary>
+        /// Get a list of all registered users. You need to be Admin to do this
+        /// </summary>
+        /// <returns>List of all registered users</returns>
+        public Task<Maybe<IEnumerable<AdminUserInfoDto>>> AdminGetAllUsers();
+
+        /// <summary>
+        /// Remove user with specified userId. You need to be admin to do this
+        /// </summary>
+        /// <param name="userId">UserId of user to remove</param>
+        /// <returns>Boolean indicating success</returns>
+        public Task<Maybe<bool>> AdminRemoveUser(int userId);
+
+        /// <summary>
+        /// Update a user entry. You must set at LEAST one of the properties of <paramref name="updateInfo"/>.
+        /// You need to be admin to do this
+        /// </summary>
+        /// <param name="userId">UserId of user to update</param>
+        /// <param name="updateInfo">What to update</param>
+        /// <returns>The new user info</returns>
+        public Task<Maybe<UserInfoDto>> AdminUpdateUser(int userId, UserUpdateInfo updateInfo);
+
     }
 }

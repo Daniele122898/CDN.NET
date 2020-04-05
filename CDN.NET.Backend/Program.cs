@@ -34,7 +34,7 @@ namespace CDN.NET.Backend
                         {
                             logger.LogInformation("Seeding database with model user");
                             var authRepo = services.GetRequiredService<IAuthRepository>();
-                            authRepo.Register("daniele", "123456").GetAwaiter().GetResult();
+                            authRepo.Register("admin", "password", true).GetAwaiter().GetResult();
                         }
                     }
 

@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using CDN.NET.Wrapper.Client;
-using CDN.NET.Wrapper.Dtos;
+using CDN.NET.Wrapper.Dtos.Album;
 using NUnit.Framework;
 
 namespace CDN.NET.Tests.Wrapper.Client
@@ -18,7 +18,7 @@ namespace CDN.NET.Tests.Wrapper.Client
         public async Task CreateAndAuthenticate()
         {
             _client = new CdnClient(Constants.BaseUrl);
-            var resp = await _client.Login("daniele", "123456");
+            var resp = await _client.Login("admin", "password");
             Assert.IsTrue(resp.HasValue);
             Assert.IsNotEmpty(resp.Value.Token);
 
@@ -47,6 +47,16 @@ namespace CDN.NET.Tests.Wrapper.Client
             var resp = (await _client.GetAllAlbums().ConfigureAwait(false)).Value.ToList();
             Assert.NotNull(resp);
             Assert.IsNotEmpty(resp);
+        }
+
+        [Test]
+        public async Task GetAllAlbumsSparse()
+        {
+            var resp = await _client.GetAllAlbumsSparse();
+            Assert.IsTrue(resp.HasValue);
+            var albums = resp.Value.ToList();
+            Assert.NotNull(albums);
+            Assert.IsNotEmpty(albums);
         }
 
         [Test]

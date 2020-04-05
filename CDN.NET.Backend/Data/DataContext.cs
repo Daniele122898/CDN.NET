@@ -16,7 +16,6 @@ namespace CDN.NET.Backend.Data
         
         protected override void OnModelCreating(ModelBuilder builder)
         {
-
             builder.Entity<ApiKey>()
                 .HasOne(u => u.User)
                 .WithOne(x => x.ApiKey)
@@ -32,14 +31,20 @@ namespace CDN.NET.Backend.Data
                 .HasOne(x => x.Album)
                 .WithMany(x => x.UFiles)
                 .HasForeignKey(k => k.AlbumId)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.SetNull)
                 .IsRequired(false);
 
             builder.Entity<Album>()
                 .HasMany(a => a.UFiles)
                 .WithOne(f => f.Album)
-                .HasForeignKey(k => k.AlbumId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(k => k.AlbumId);
+
+            builder.Entity<Album>()
+                .HasOne(u => u.Owner)
+                .WithMany(a => a.Albums)
+                .HasForeignKey(k => k.OwnerId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
 
             /*
             // Like

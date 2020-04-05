@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ArgonautCore.Maybe;
-using CDN.NET.Wrapper.Dtos;
+using CDN.NET.Wrapper.Dtos.File;
 using CDN.NET.Wrapper.Enums;
 using CDN.NET.Wrapper.Utils;
 

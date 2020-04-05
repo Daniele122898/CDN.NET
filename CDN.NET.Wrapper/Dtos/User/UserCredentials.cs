@@ -1,4 +1,4 @@
-namespace CDN.NET.Wrapper.Dtos
+namespace CDN.NET.Wrapper.Dtos.User
 {
     internal class UserCredentials
     {

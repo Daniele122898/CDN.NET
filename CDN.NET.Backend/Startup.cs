@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Reflection;
@@ -43,6 +44,60 @@ namespace CDN.NET.Backend
                     Title = "CDN.NET",
                     Version = "v1",
                     Description = "Contend Delivery Network for secondbooks.ch"
+                });
+                
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                {
+                    Description = "Used for JWT token",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+                
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                    {
+                        new OpenApiSecurityScheme()
+                        {
+                            Reference = new OpenApiReference()
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Scheme = "oauth2",
+                            Name = "Bearer",
+                            In = ParameterLocation.Header
+                        }, 
+                        new List<string>()
+                    }
+                });
+                
+                c.AddSecurityDefinition("X-Argonaut", new OpenApiSecurityScheme()
+                {
+                    Description = "Used for Argonaut Token",
+                    Name = "X-Argonaut",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "X-Argonaut"
+                });
+                
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                    {
+                        new OpenApiSecurityScheme()
+                        {
+                            Reference = new OpenApiReference()
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "X-Argonaut"
+                            },
+                            Scheme = "oauth2",
+                            Name = "X-Argonaut",
+                            In = ParameterLocation.Header
+                        }, 
+                        new List<string>()
+                    }
                 });
                 
                 // Set the comments path for the Swagger JSON and UI.

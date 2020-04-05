@@ -4,6 +4,7 @@ namespace CDN.NET.Wrapper.Enums
     {
         Get,
         Post,
-        Delete
+        Delete,
+        Put
     }
 }

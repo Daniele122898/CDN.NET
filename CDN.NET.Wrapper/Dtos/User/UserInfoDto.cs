@@ -1,6 +1,6 @@
-namespace CDN.NET.Wrapper.Models
+﻿namespace CDN.NET.Wrapper.Dtos.User
 {
-    public class User
+    public class UserInfoDto
     {
         public int Id { get; set; }
         public string Username { get; set; }

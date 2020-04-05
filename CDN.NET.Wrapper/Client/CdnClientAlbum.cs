@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ArgonautCore.Maybe;
-using CDN.NET.Wrapper.Dtos;
+using CDN.NET.Wrapper.Dtos.Album;
 using CDN.NET.Wrapper.Enums;
 using CDN.NET.Wrapper.Utils;
 
@@ -13,6 +13,14 @@ namespace CDN.NET.Wrapper.Client
         public async Task<Maybe<IEnumerable<Album>>> GetAllAlbums()
         {
             return await this.GetAndMapResponse<IEnumerable<Album>>(Endpoints.AlbumGetAll)
+                .ConfigureAwait(false);
+        }
+
+
+        /// <inheritdoc />
+        public async Task<Maybe<IEnumerable<AlbumsSparse>>> GetAllAlbumsSparse()
+        {
+            return await this.GetAndMapResponse<IEnumerable<AlbumsSparse>>(Endpoints.AlbumGetAllSparse)
                 .ConfigureAwait(false);
         }
 

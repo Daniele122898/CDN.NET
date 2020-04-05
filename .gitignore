@@ -8,3 +8,4 @@ fileStorage/
 */appsettings*.json
 doc/
 **/publish*.sh
+*.NET.sln.DotSettings.user
