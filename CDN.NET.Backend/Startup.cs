@@ -239,6 +239,7 @@ namespace CDN.NET.Backend
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapFallbackToController("Index", "Fallback"); // Use our fallback
             });
         }
     }
