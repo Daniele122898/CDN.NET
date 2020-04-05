@@ -18,9 +18,10 @@ namespace CDN.NET.Wrapper.Client
 
 
         /// <inheritdoc />
-        public Task<Maybe<IEnumerable<AlbumsSparse>>> GetAllAlbumsSparse()
+        public async Task<Maybe<IEnumerable<AlbumsSparse>>> GetAllAlbumsSparse()
         {
-            throw new System.NotImplementedException();
+            return await this.GetAndMapResponse<IEnumerable<AlbumsSparse>>(Endpoints.AlbumGetAllSparse)
+                .ConfigureAwait(false);
         }
 
         /// <inheritdoc />

@@ -50,6 +50,16 @@ namespace CDN.NET.Tests.Wrapper.Client
         }
 
         [Test]
+        public async Task GetAllAlbumsSparse()
+        {
+            var resp = await _client.GetAllAlbumsSparse();
+            Assert.IsTrue(resp.HasValue);
+            var albums = resp.Value.ToList();
+            Assert.NotNull(albums);
+            Assert.IsNotEmpty(albums);
+        }
+
+        [Test]
         public async Task GetPrivateAlbum()
         {
             var resp = await _client.GetPrivateAlbum(_albumUsedForTestingPrivate.Id).ConfigureAwait(false);

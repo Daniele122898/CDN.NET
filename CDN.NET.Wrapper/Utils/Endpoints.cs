@@ -21,6 +21,7 @@ namespace CDN.NET.Wrapper.Utils
         
         // Album Endpoints
         public static string AlbumGetAll = "api/album/getall";
+        public static string AlbumGetAllSparse = "api/album/getallsparse";
         public static string AlbumGetPrivate = "api/album/private";
         public static string AlbumBase = "api/album";
         
