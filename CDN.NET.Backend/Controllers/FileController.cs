@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using CDN.NET.Backend.Dtos.FileDtos;
 using CDN.NET.Backend.Dtos.UploadDtos;
+using CDN.NET.Backend.Helpers;
 using CDN.NET.Backend.Repositories.Interfaces;
 using CDN.NET.Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -31,12 +32,22 @@ namespace CDN.NET.Backend.Controllers
 
         [HttpGet("api/[controller]/getAll")]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<UFileReturnDto>>> GetAllFilesFromUser()
+        public async Task<ActionResult<IEnumerable<UFileReturnDto>>> GetAllFilesFromUser([FromQuery]PageUserParams userParams)
         {
             int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var files = await _fileRepo.GetFilesFromUser(userId);
-
+            // var files = await _fileRepo.GetFilesFromUser(userId);
+            var files = await _fileRepo.GetFilesFromUserPaged(userId, userParams);
+            
             var filesToReturn = _mapper.Map<IEnumerable<UFileReturnDto>>(files);
+
+            Response.AddPagination(new PaginationHeader()
+            {
+                CurrentPage = files.CurrentPage,
+                ItemsPerPage = files.PageSize,
+                TotalItems = files.TotalCount,
+                TotalPages = files.TotalPages
+            });
+
             return Ok(filesToReturn);
         }
         
