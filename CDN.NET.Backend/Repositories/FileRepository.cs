@@ -55,7 +55,7 @@ namespace CDN.NET.Backend.Repositories
 
         public async Task<PagedList<UFile>> GetFilesFromUserPaged(int userId, PageUserParams userParams)
         {
-            var users = _context.UFiles.Where(f => f.OwnerId == userId);
+            var users = _context.UFiles.Where(f => f.OwnerId == userId).OrderByDescending(o => o.DateAdded);
 
             return await PagedList<UFile>.CreateAsync(users, userParams.PageNumber, userParams.PageSize);
         }
