@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CDN.NET.Backend.Data;
+using CDN.NET.Backend.Helpers;
 using CDN.NET.Backend.Models;
 using CDN.NET.Backend.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -50,6 +51,13 @@ namespace CDN.NET.Backend.Repositories
         public async Task<List<UFile>> GetFilesFromUser(int userId)
         {
             return await _context.UFiles.Where(f => f.OwnerId == userId).ToListAsync();
+        }
+
+        public async Task<PagedList<UFile>> GetFilesFromUserPaged(int userId, PageUserParams userParams)
+        {
+            var users = _context.UFiles.Where(f => f.OwnerId == userId);
+
+            return await PagedList<UFile>.CreateAsync(users, userParams.PageNumber, userParams.PageSize);
         }
 
         public async Task<int> GetFileCount(int userId)

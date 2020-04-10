@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CDN.NET.Backend.Helpers;
 using CDN.NET.Backend.Models;
 
 namespace CDN.NET.Backend.Repositories.Interfaces
@@ -13,6 +14,7 @@ namespace CDN.NET.Backend.Repositories.Interfaces
         Task<UFile> GetFile(string publicId);
         Task<List<UFile>> GetFiles(List<string> publicIds);
         Task<List<UFile>> GetFilesFromUser(int userId);
+        Task<PagedList<UFile>> GetFilesFromUserPaged(int userId, PageUserParams userParams);
         Task<int> GetFileCount(int userId);
 
     }

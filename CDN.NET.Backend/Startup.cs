@@ -231,10 +231,15 @@ namespace CDN.NET.Backend
             app.UseRouting();
             app.UseAuthorization();
             app.UseAuthentication();
+            
+            // Add support for static files. Ordering is important
+            app.UseDefaultFiles(); // search index.html in wwwroot
+            app.UseStaticFiles();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapFallbackToController("Index", "Fallback"); // Use our fallback
             });
         }
     }
