@@ -56,7 +56,7 @@ namespace CDN.NET.Backend.Controllers
         public async Task<IActionResult> GetPrivateFileFromPublicId(string publicIdAndExtension)
         {
             int index = publicIdAndExtension.IndexOf('.');
-            if (index <= 0)
+            if (index <= 0) 
                 return NotFound();
             string publicId = publicIdAndExtension.Remove(index);
             var fileFromRepo = await _fileRepo.GetFile(publicId);

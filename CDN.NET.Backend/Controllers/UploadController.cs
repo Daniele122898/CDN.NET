@@ -54,8 +54,9 @@ namespace CDN.NET.Backend.Controllers
         }
 
         [HttpPost("multi")]
-        [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
-        [RequestSizeLimit(int.MaxValue)]
+        [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = long.MaxValue)]
+        [RequestSizeLimit(long.MaxValue)]
+        [DisableRequestSizeLimit]
         public async Task<ActionResult<IEnumerable<UFileReturnDto>>> UploadFiles([FromForm] UFilesReceiveDto filesReceiveDto)
         {
             
@@ -221,8 +222,11 @@ namespace CDN.NET.Backend.Controllers
         }
 
         [HttpPost]
-        [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
-        [RequestSizeLimit(int.MaxValue)]
+        [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = long.MaxValue,
+            BufferBodyLengthLimit = long.MaxValue, MemoryBufferThreshold = int.MaxValue, 
+            MultipartBoundaryLengthLimit = int.MaxValue, ValueCountLimit = int.MaxValue)]
+        [RequestSizeLimit(long.MaxValue)]
+        [DisableRequestSizeLimit]
         public async Task<ActionResult<UFileReturnDto>> UploadFile([FromForm] UFileReceiveDto fileReceiveDto)
         {
             if (fileReceiveDto.File == null || fileReceiveDto.File.Length == 0)

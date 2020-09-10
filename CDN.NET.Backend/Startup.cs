@@ -147,7 +147,7 @@ namespace CDN.NET.Backend
                         LifetimeValidator = LifetimeValidator
                     };
                 })
-                .AddApiKeySupport(options => { });
+                .AddApiKeySupport(options => {}); 
             services.AddAuthorization(op =>
             {
                 op.DefaultPolicy = new AuthorizationPolicyBuilder()
