@@ -28,7 +28,6 @@ namespace CDN.NET.Backend
                     IWebHostEnvironment env = services.GetRequiredService<IWebHostEnvironment>();
                     if (env.IsDevelopment())
                     {
-                        context.Database.EnsureCreated();
                         // Seed in here
                         if (!context.Users.Any())
                         {

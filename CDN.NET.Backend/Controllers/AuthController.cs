@@ -150,7 +150,6 @@ namespace CDN.NET.Backend.Controllers
                 Token = tokenHandler.WriteToken(token),
                 User = user
             });
-
         }
     }
 }
